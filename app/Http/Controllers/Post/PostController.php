@@ -9,6 +9,8 @@ use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -29,12 +31,13 @@ class PostController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Throwable
      */
     public function store(Post $post, StorePostRequest $request, PostCreateAction $action)
     {
         $data = $request->validated();
 
-        $postResource = $action->handle($data, $post);
+        $postResource = DB::transaction(fn() => $action->handle($data, $post));
 
         Log::debug('Post stored with id: ' . $post->id);
 
@@ -47,22 +50,30 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Post::with(['tags', 'category', 'user'])->findOrFail($id);
+        try {
+            $post = Post::with(['tags', 'category', 'user'])->findOrFail($id);
 
-        Log::debug('Post was listed with id: ' . $post->id);
+            Log::debug('Post was listed with id: ' . $post->id);
 
+        } catch (Exception $e) {
+
+            Log::debug('Post was not found id: ' . $post->id);
+
+            return response()->json(['Post was not found: ' . $e->getMessage()], 404);
+        }
         return PostResource::make($post);
     }
 
 
     /**
      * Update the specified resource in storage.
+     * @throws \Throwable
      */
     public function update(Post $post, UpdatePostRequest $request, PostUpdateAction $action)
     {
         $data = $request->validated();
 
-        $updatedPost = $action->handle($post, $data);
+        $updatedPost = DB::transaction(fn() => $action->handle($post, $data));
 
         Log::debug('Post updated with id: ' . $updatedPost->id);
 
