@@ -38,11 +38,11 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        $postResource = DB::transaction(fn() => $action->handle($data, $post));
+        $createdPost = DB::transaction(fn() => $action->handle($data, $post));
 
         Log::debug('Post stored with id: ' . $post->id);
 
-        return PostResource::make($postResource);
+        return PostResource::make($createdPost);
     }
 
 
