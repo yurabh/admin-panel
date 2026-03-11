@@ -18,7 +18,6 @@ class StorePageController extends Controller
     public function __invoke(StorePageRequest $request, StorePageAction $action)
     {
         try {
-
             $page = $action->handle($request);
 
             Log::debug('Page were stored');

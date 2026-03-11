@@ -17,9 +17,7 @@ class ShowPageAction
     public function handle($id): Page|JsonResponse
     {
         try {
-
             return Page::query()->findOrFail($id);
-
         } catch (Exception $e) {
 
             Log::debug('Page not found', ['exception' => $e->getMessage()]);
