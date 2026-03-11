@@ -20,8 +20,6 @@ class SettingDeleteAction
 
         $setting->delete();
 
-        Log::debug('Setting removed successfully', ['setting' => $setting->key]);
-
         return response()->json(['message' => 'Deleted']);
     }
 }
