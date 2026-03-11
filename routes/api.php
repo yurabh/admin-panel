@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Page\DeletePageController;
@@ -9,8 +13,10 @@ use App\Http\Controllers\Page\UpdatePageController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\Tag\TagController;
+use App\Http\Controllers\User\UserController;
 
 Route::prefix('admin')
+    ->middleware(['auth:sanctum', 'admin'])
     ->group(function () {
         Route::resource('posts', PostController::class);
 
@@ -40,3 +46,14 @@ Route::prefix('admin')
         Route::put('/tags/{tag}', [TagController::class, 'update']);
         Route::delete('/tags/{tag}', [TagController::class, 'destroy']);
     });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::delete('/logout', LogoutController::class);
+
+    Route::apiResource('users', UserController::class);
+    Route::post('/password/reset', ResetPasswordController::class);
+});
+
+Route::post('/login', AuthController::class);
+Route::post('/register', RegistrationController::class);
