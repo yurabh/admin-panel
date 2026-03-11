@@ -33,11 +33,9 @@ class TagController extends Controller
 
     public function show(Tag $tag): TagResource
     {
-        $foundTag = $tag->find($tag->id);
+        Log::debug('Tag found with id: {$tag->id}');
 
-        Log::debug('Tag found  with id: ' . $tag->id);
-
-        return TagResource::make($foundTag);
+        return TagResource::make($tag);
     }
 
 
