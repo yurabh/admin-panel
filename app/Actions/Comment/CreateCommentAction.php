@@ -27,7 +27,8 @@ class CreateCommentAction
             'is_approved' => $request["is_approved"],
         ]);
 
-        Log::debug('Comment created');
+        Log::debug('Comment created with id: ', [$comment->id]);
+
         return $comment->load(['user', 'post']);
     }
 }
