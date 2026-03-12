@@ -11,11 +11,13 @@ use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use Exception;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
 
     /**
      * Display a listing of the resource.
@@ -70,6 +72,8 @@ class PostController extends Controller
      */
     public function update(Post $post, UpdatePostRequest $request, PostUpdateAction $action)
     {
+        $this->authorize('update', $post);
+
         $data = $request->validated();
 
         $updatedPost = DB::transaction(fn() => $action->handle($post, $data));
