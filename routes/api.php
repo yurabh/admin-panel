@@ -29,12 +29,6 @@ Route::prefix('admin')
         Route::resource('settings', SettingController::class)
             ->only(['index', 'store', 'update', 'destroy', 'show']);
 
-        Route::post('/comments', [CommentController::class, 'store']);
-        Route::get('/comments', [CommentController::class, 'index']);
-        Route::get('/comments/{comment}', [CommentController::class, 'show']);
-        Route::put('/comments/{comment}', [CommentController::class, 'update']);
-        Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
-
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::get('/categories', [CategoryController::class, 'index']);
         Route::get('/categories/{category}', [CategoryController::class, 'show']);
@@ -54,6 +48,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::post('/comments', [CommentController::class, 'store']);
+    Route::get('/comments', [CommentController::class, 'index']);
+    Route::get('/comments/{comment}', [CommentController::class, 'show']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
 
 Route::post('/login', AuthController::class);
