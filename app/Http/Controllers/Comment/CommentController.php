@@ -8,11 +8,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Comment\CommentRequest;
 use App\Http\Resources\Comment\CommentResource;
 use App\Models\Comment;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CommentController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -47,6 +50,8 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment, UpdateCommentAction $action)
     {
+        $this->authorize('update', $comment);
+
         $comment = $action->handle($request, $comment);
 
         return CommentResource::make($comment);
@@ -56,6 +61,8 @@ class CommentController extends Controller
     public function destroy($id)
     {
         $comment = Comment::findOrFail($id);
+
+        $this->authorize('delete', $comment);
 
         Log::debug('Comment found with id: ' . $comment->id);
 
