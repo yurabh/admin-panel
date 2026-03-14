@@ -2,6 +2,7 @@
 
 namespace App\Actions\Comment;
 
+use App\Events\NewCommentEvent;
 use App\Http\Requests\Comment\CommentRequest;
 use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,8 @@ class CreateCommentAction
         ]);
 
         Log::debug('Comment created with id: ', [$comment->id]);
+
+        event(new NewCommentEvent($comment));
 
         return $comment->load(['user', 'post']);
     }
