@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => 'Page exception was occurred: ' . $e->getMessage()
             ]);
         });
+
         $exceptions->render(function (PostException $e) {
             return response()->json([
                 'message' => 'Post exception was occurred: ' . $e->getMessage()
