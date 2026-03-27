@@ -1,0 +1,93 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  APP_ENV: testing
+  DB_CONNECTION: sqlite
+  DB_DATABASE: ":memory:"
+  IMAGE_NAME: yurabh1990/admin-panel-repository
+  IMAGE_TAG: php.8.2
+  NGINX_IMAGE_TAG: nginx.latest
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+    - storage/framework/cache/
+
+app_test:
+  stage: test
+  image: php:8.2
+  before_script:
+    # Clear PHPUnit cache
+    - rm -rf .phpunit.cache
+
+    # Copy test .env file
+    - cp $TEST_ENV_FILE .env
+
+    # Update system packages and install build dependencies
+    - apt-get update && apt-get install -y git zip unzip  libzip-dev
+
+    # Install PHP extensions required for Laravel (pdo_mysql, zip)
+    - docker-php-ext-install pdo_mysql zip
+
+    # Install Composer binary via the official installer
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+    # Install PHP dependencies via Composer
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
+
+    # Clear Laravel cached files
+    - php artisan optimize:clear
+
+    # Run database migrations
+    - php artisan migrate --force
+  script:
+    - php artisan test
+
+
+php_build:
+  stage: build
+  when: manual
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+  script:
+    - docker build --target deploy -f app/Docker/Dockerfile -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+
+nginx_build:
+  stage: build
+  when: manual
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+  script:
+    - docker build -t $IMAGE_NAME:$NGINX_IMAGE_TAG -f app/Docker/nginx/Dockerfile .
+    - docker push $IMAGE_NAME:$NGINX_IMAGE_TAG
+
+
+deploy_aws:
+  stage: deploy
+  image:
+    name: amazon/aws-cli:latest
+    entrypoint: [ "" ]
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - aws ecs update-service --cluster admin-panel-yurabh --service admin-panel-yurabh --force-new-deployment --region eu-north-1
+    - |
+      aws ecs run-task --cluster admin-panel-yurabh --task-definition api \
+      --overrides '{"containerOverrides": [{"name": "api", "command": ["php", "artisan", "migrate", "--force"]}]}' \
+      --launch-type FARGATE \
+      --network-configuration '{"awsvpcConfiguration": {"subnets": ["subnet-0cda46c670efa4c45", "subnet-00a48dfd343fbe42d"], "assignPublicIp": "ENABLED"}}'

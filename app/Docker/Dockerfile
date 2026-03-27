@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm as base
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -17,6 +17,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
+FROM base as development
+
 RUN composer install
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -25,3 +27,15 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 RUN docker-php-ext-install pcntl
+
+CMD ["php-fpm"]
+
+FROM base as deploy
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

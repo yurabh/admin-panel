@@ -4,6 +4,7 @@ services:
         build:
             context: .
             dockerfile: app/Docker/Dockerfile
+            target: development
         container_name: laravel-app
         volumes:
             - .:/var/www/html
