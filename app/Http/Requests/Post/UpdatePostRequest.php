@@ -37,7 +37,7 @@ class UpdatePostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:2000',
             'category_id' => 'nullable|integer|max:255',
-            'slug' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:posts,slug',
             'user_id' => 'nullable|integer|max:255',
             'tags' => 'array',
             'is_published' => 'boolean',
