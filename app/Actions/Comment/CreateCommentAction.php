@@ -17,16 +17,11 @@ class CreateCommentAction
 
     public function handle(CommentRequest $request): Comment|JsonResponse
     {
-        $request->validated();
+        $data = $request->validated();
 
         Log::debug('Validation passed successfully');
 
-        $comment = Comment::create([
-            'post_id' => $request["post_id"],
-            'user_id' => $request["user_id"],
-            'content' => $request["content"],
-            'is_approved' => $request["is_approved"],
-        ]);
+        $comment = Comment::create($data);
 
         Log::debug('Comment created with id: ', [$comment->id]);
 

@@ -16,6 +16,10 @@ class PostUpdateAction
 
         $mappedData->update();
 
+        $tagIds = $data['tags'] ?? [];
+
+        $mappedData->tags()->sync($tagIds);
+
         return $mappedData;
     }
 }

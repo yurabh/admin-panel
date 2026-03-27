@@ -14,6 +14,6 @@ class IsAdminMiddleware
         if (auth()->check() && auth()->user()->role === UserRole::ADMIN) {
             return $next($request);
         }
-        abort(403, Response::HTTP_FORBIDDEN);
+        abort(403, 'Forbidden');
     }
 }

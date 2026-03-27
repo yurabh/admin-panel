@@ -14,8 +14,11 @@ Schedule::command('app:clean-old-comments')
 Schedule::command('app:publish-posts')
     ->daily();
 
-Schedule::command('app:set-role 6 admin')
-    ->sundays()->at('21:20');
+$adminId = config('services.admin.id');
+
+Schedule::command("app:set-role {$adminId} admin")
+    ->sundays()
+    ->at('21:20');
 
 Schedule::command('queue:prune-failed --hours=48')
     ->monthly();

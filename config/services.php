@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'admin' => [
+        'id' => env('ADMIN_USER_ID', 0),
+    ],
 ];

@@ -27,7 +27,7 @@ class CleanOldComments extends Command
     public function handle(): void
     {
         Comment::where("is_approved", false)
-            ->where("created_at", "<", now()->subMinute())
+            ->where("created_at", "<", now()->subDays(30))
             ->delete();
 
         $this->info("Old Comments have been cleaned");
