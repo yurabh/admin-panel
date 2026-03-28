@@ -1,66 +1,242 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Admin Panel API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API бекенд для адмін-панелі на Laravel 11. Надає JSON API для управління контентом сайту: постами, сторінками, категоріями, тегами, коментарями, налаштуваннями та користувачами.
 
-## About Laravel
+## Технологічний стек
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **PHP** 8.2
+- **Laravel** 11.x
+- **MySQL** 8.0
+- **Redis** — кеш та черги
+- **Laravel Sanctum** — токен-автентифікація
+- **Laravel Horizon** — моніторинг черг
+- **AWS S3** — зберігання файлів
+- **Docker** + **Nginx**
+- **GitLab CI/CD** → **AWS ECS Fargate**
+- **OpenAPI 3 / Swagger** — документація API
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Вимоги
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Docker & Docker Compose
+- Make
 
-## Learning Laravel
+## Запуск через Docker
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+# Клонувати репозиторій
+git clone <repo-url>
+cd admin-panel-main
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Скопіювати та заповнити змінні середовища
+cp .env.example .env
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Зібрати та запустити контейнери
+make build
+make up
 
-## Laravel Sponsors
+# Запустити міграції та сідери
+make migrate
+make seed
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Додаток буде доступний на `http://localhost:8080`
 
-### Premium Partners
+### Змінні середовища (.env)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
 
-## Contributing
+REDIS_HOST=redis
+REDIS_PORT=6379
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
 
-## Code of Conduct
+AWS_ACCESS_KEY_ID=your-key
+AWS_SECRET_ACCESS_KEY=your-secret
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=your-bucket
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+MAIL_MAILER=smtp
+MAIL_HOST=your-mail-host
+MAIL_PORT=587
+MAIL_USERNAME=your-username
+MAIL_PASSWORD=your-password
+MAIL_FROM_ADDRESS=noreply@example.com
+```
 
-## Security Vulnerabilities
+## Makefile команди
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+make up            # Запустити контейнери
+make down          # Зупинити контейнери
+make restart       # Перезапустити контейнери
+make build         # Зібрати образи без кешу
 
-## License
+make shell         # Відкрити термінал всередині контейнера
+make migrate       # Запустити міграції
+make migrate-step  # Відкотити останню міграцію та перезапустити
+make seed          # Заповнити БД тестовими даними
+make fresh         # Скинути БД та запустити всі міграції з сідерами
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+make test          # Запустити тест-сюїт
+make cache         # Очистити всі Laravel кеші
+make tinker        # Відкрити Artisan Tinker
+make xdebug-status # Перевірити статус Xdebug
+```
+
+## API Документація
+
+Swagger UI доступний після запуску:
+
+```
+http://localhost:8080/api/documentation
+```
+
+Генерація/оновлення документації:
+
+```bash
+docker compose exec app php artisan l5-swagger:generate
+```
+
+## Структура API
+
+### Публічні ендпоінти
+
+| Метод | URL | Опис |
+|-------|-----|------|
+| POST | `/api/login` | Вхід (отримання токена) |
+| POST | `/api/register` | Реєстрація нового користувача |
+| POST | `/api/forgot/password` | Запит на скидання пароля |
+| POST | `/api/password/reset` | Скидання пароля |
+
+### Автентифіковані ендпоінти (Bearer token)
+
+| Метод | URL | Опис |
+|-------|-----|------|
+| DELETE | `/api/logout` | Вихід |
+| GET/POST/PUT/DELETE | `/api/users` | Управління користувачами |
+| GET/POST/PUT/DELETE | `/api/comments` | Управління коментарями |
+
+### Адмін ендпоінти (роль `admin`)
+
+| Метод | URL | Опис |
+|-------|-----|------|
+| GET/POST/PUT/DELETE | `/api/admin/posts` | Управління постами |
+| GET/POST/PUT/DELETE | `/api/admin/pages` | Управління сторінками |
+| GET/POST/PUT/DELETE | `/api/admin/settings` | Системні налаштування |
+| GET/POST/PUT/DELETE | `/api/admin/categories` | Категорії |
+| GET/POST/PUT/DELETE | `/api/admin/tags` | Теги |
+
+## Аутентифікація
+
+API використовує Laravel Sanctum (Bearer token).
+
+```bash
+# Логін
+POST /api/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "password"
+}
+
+# Відповідь
+{
+    "data": {
+        "access_token": "1|abc123...",
+        "token_type": "Bearer",
+        "user": { "id": 1, "name": "Admin", "email": "...", "role": "admin" }
+    }
+}
+
+# Використання токена
+Authorization: Bearer 1|abc123...
+```
+
+## Ролі користувачів
+
+| Роль | Доступ |
+|------|--------|
+| `admin` | Повний доступ до всіх ресурсів |
+| `editor` | Доступ до своїх постів та коментарів |
+| `user` | Читання та управління власними коментарями |
+
+## Черги (Queues)
+
+Проект використовує Redis-черги з моніторингом через Laravel Horizon.
+
+```bash
+# Запустити Horizon (всередині контейнера)
+php artisan horizon
+```
+
+Horizon dashboard: `http://localhost:8080/horizon`
+
+**Фонові задачі:**
+- Сповіщення адміністраторів при кожному логіні
+- Email підтвердження реєстрації
+- Сповіщення автора посту про новий коментар
+- Сповіщення користувача при зміні налаштувань
+
+## Artisan команди
+
+```bash
+# Змінити роль користувача
+php artisan app:change-user-role
+
+# Опублікувати заплановані пости
+php artisan app:publish-posts
+
+# Видалити старі несхвалені коментарі (старші 30 днів)
+php artisan app:clean-old-comments
+```
+
+## Тести
+
+```bash
+# Через Make
+make test
+
+# Або напряму
+docker compose exec app php artisan test
+
+# З детальним виводом
+docker compose exec app php artisan test --verbose
+```
+
+Тести використовують SQLite in-memory БД. Конфігурація в `phpunit.xml`.
+
+## Архітектура
+
+Проект використовує **Action Pattern** — бізнес-логіка винесена з контролерів у окремі класи `app/Actions/`:
+
+```
+Controller → FormRequest (валідація) → Action (логіка) → Resource (відповідь)
+```
+
+**Ключові патерни:**
+- **Action Pattern** — ізоляція бізнес-логіки
+- **API Resources** — трансформація JSON відповідей
+- **Form Requests** — валідація вхідних даних
+- **Policies** — авторизація на рівні моделей
+- **Events & Listeners** — подієво-орієнтована архітектура
+- **Observer** — автоматична інвалідація кешу налаштувань
+- **Jobs & Queues** — асинхронна обробка
+
+## CI/CD
+
+GitLab CI/CD pipeline (`/.gitlab-ci.yml`):
+
+| Стейдж | Job | Тригер |
+|--------|-----|--------|
+| `test` | `app_test` — PHPUnit | Автоматично на кожен push |
+| `build` | `php_build` — Docker build + push | Вручну |
+| `build` | `nginx_build` — Nginx Docker build | Вручну |
+| `deploy` | `deploy_aws` — AWS ECS deploy + migrate | Вручну (тільки `main`) |
