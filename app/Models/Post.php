@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Query\Builder;
 use OpenApi\Attributes as OAT;
+use Illuminate\Database\Eloquent\Builder;
 
 
 #[OAT\Schema(
@@ -74,5 +74,38 @@ class Post extends Model
     public function scopeRecent(Builder $query): Builder
     {
         return $query->orderByDesc('published_at');
+    }
+
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        return $query->when($term, function ($query) use ($term) {
+            $query->where(function ($inner) use ($term) {
+                $inner->where('title', 'like', "%{$term}%")
+                    ->orWhere('content', 'like', "%{$term}%");
+            });
+        });
+    }
+
+    public function scopeByCategory(Builder $query, int $categoryId): Builder
+    {
+        return $query->where('category_id', $categoryId);
+    }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        return $query->when($filters['category_id'] ?? null, function ($q, $id) {
+            $q->where('category_id', $id);
+        })
+            ->when(isset($filters['is_published']), function ($q) use ($filters) {
+                $q->where('is_published', (bool)$filters['is_published']);
+            })
+            ->when($filters['date_from'] ?? null, function ($q, $date) {
+                $q->whereNotNull('published_at')
+                    ->whereDate('published_at', '>=', $date);
+            })
+            ->when($filters['date_to'] ?? null, function ($q, $date) {
+                $q->whereNotNull('published_at')
+                    ->whereDate('published_at', '<=', $date);
+            });
     }
 }

@@ -19,6 +19,12 @@ use App\Http\Controllers\User\UserController;
 Route::prefix('admin')
     ->middleware(['auth:sanctum', 'admin'])
     ->group(function () {
+        Route::prefix('posts')->group(function () {
+            Route::get('search', [PostController::class, 'search']);
+            Route::get('filter', [PostController::class, 'filter']);
+            Route::get('sorted-by-date', [PostController::class, 'getSortedByDatePublishedAt']);
+            Route::get('category/{categoryId}', [PostController::class, 'getByCategoryId']);
+        });
         Route::resource('posts', PostController::class);
 
         Route::post('/pages', StorePageController::class);
@@ -54,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
+
 
 Route::post('/login', AuthController::class);
 Route::post('/register', RegistrationController::class);

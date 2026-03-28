@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Post;
 
+use App\Actions\Post\PostByCategoryIdAndDateFilterAction;
+use App\Actions\Post\PostByCategoryAction;
 use App\Actions\Post\PostCreateAction;
+use App\Actions\Post\PostSearchAction;
+use App\Actions\Post\PostSortAction;
 use App\Actions\Post\PostUpdateAction;
 use App\Exceptions\PostException;
 use App\Http\Controllers\Controller;
@@ -12,6 +16,7 @@ use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OAT;
@@ -19,7 +24,6 @@ use OpenApi\Attributes as OAT;
 class PostController extends Controller
 {
     use AuthorizesRequests;
-
 
     #[OAT\Get(
         path: '/api/admin/posts',
@@ -222,5 +226,138 @@ class PostController extends Controller
         Log::debug('Post deleted with id: ' . $post->id);
 
         return response()->noContent();
+    }
+
+
+    #[OAT\Get(
+        path: '/api/admin/posts/search',
+        description: 'Search posts by title or content using a term.',
+        summary: 'Search posts',
+        tags: ['Admin Posts'],
+        parameters: [
+            new OAT\Parameter(
+                name: 'term',
+                description: 'The search term',
+                in: 'query',
+                required: true,
+                schema: new OAT\Schema(type: 'string', minLength: 2)
+            )
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'Found posts',
+                content: new OAT\JsonContent(
+                    type: 'array',
+                    items: new OAT\Items(ref: '#/components/schemas/PostResource')
+                )
+            )
+        ]
+    )]
+    public function search(Request $request, PostSearchAction $action)
+    {
+        $term = $request->query('term');
+
+        if (empty($term)) {
+            return response()->json(['message' => 'Search term is required'], 400);
+        }
+
+        $posts = $action->handle(['search' => $term]);
+
+        Log::debug("User searched for: {$term}");
+
+        return PostResource::collection($posts);
+    }
+
+
+    #[OAT\Get(
+        path: '/api/admin/posts/sorted-by-date',
+        description: 'Get the most recent published posts.',
+        summary: 'Get recent posts',
+        tags: ['Admin Posts'],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'List of recent posts',
+                content: new OAT\JsonContent(
+                    type: 'array',
+                    items: new OAT\Items(ref: '#/components/schemas/PostResource')
+                )
+            )
+        ]
+    )]
+    public function getSortedByDatePublishedAt(PostSortAction $action)
+    {
+        $posts = $action->handle();
+
+        Log::debug('Filtered posts by date is done');
+
+        return PostResource::collection($posts);
+    }
+
+
+    #[OAT\Get(
+        path: '/api/admin/posts/category/{categoryId}',
+        summary: 'Get posts by category with pagination',
+        tags: ['Admin Posts'],
+        parameters: [
+            new OAT\Parameter(
+                name: 'categoryId',
+                in: 'path',
+                required: true,
+                schema: new OAT\Schema(type: 'integer')
+            ),
+            new OAT\Parameter(
+                name: 'page',
+                description: 'Page number',
+                in: 'query',
+                schema: new OAT\Schema(type: 'integer', default: 1)
+            )
+        ],
+        responses: [
+            new OAT\Response(
+                response: 200,
+                description: 'Paginated list of posts',
+                content: new OAT\JsonContent(
+                    properties: [
+                        new OAT\Property(property: 'data', type: 'array', items: new OAT\Items(ref: '#/components/schemas/PostResource')),
+                        new OAT\Property(property: 'meta', type: 'object'),
+                        new OAT\Property(property: 'links', type: 'object')
+                    ]
+                )
+            )
+        ]
+    )]
+    public function getByCategoryId(int $categoryId, PostByCategoryAction $action)
+    {
+        $posts = $action->handle($categoryId);
+
+        Log::debug("Posts listed for category ID: {$categoryId}");
+
+        return PostResource::collection($posts);
+    }
+
+
+    #[OAT\Get(
+        path: '/api/admin/posts/filter',
+        summary: 'Count posts for category',
+        tags: ['Admin Posts'],
+        parameters: [
+            new OAT\Parameter(name: 'category_id', in: 'query', schema: new OAT\Schema(type: 'integer')),
+            new OAT\Parameter(name: 'is_published', in: 'query', schema: new OAT\Schema(type: 'boolean')),
+            new OAT\Parameter(name: 'date_from', in: 'query', schema: new OAT\Schema(type: 'string', format: 'date')),
+            new OAT\Parameter(name: 'date_to', in: 'query', schema: new OAT\Schema(type: 'string', format: 'date')),
+        ],
+        responses: [
+            new OAT\Response(response: 200, description: 'Paginated posts', content: new OAT\JsonContent(type: 'object'))
+        ]
+    )]
+    public function filter(Request $request, PostByCategoryIdAndDateFilterAction $action)
+    {
+        $filters = $request->only(['category_id', 'is_published', 'date_from', 'date_to']);
+
+        $posts = $action->handle($filters);
+
+        return PostResource::collection($posts);
     }
 }
