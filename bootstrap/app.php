@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\BillingException;
 use App\Exceptions\PageException;
 use App\Exceptions\PostException;
 use Illuminate\Foundation\Application;
@@ -16,9 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin' => \App\Http\Middleware\IsAdminMiddleware::class,
+            'subscribed' => \App\Http\Middleware\CheckSubscriptionMiddleware::class,
         ]);
         $middleware->api([
         ]);
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (PageException $e) {
@@ -30,6 +33,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (PostException $e) {
             return response()->json([
                 'message' => 'Post exception was occurred: ' . $e->getMessage()
+            ]);
+        });
+
+        $exceptions->render(function (BillingException $e) {
+            return response()->json([
+                'message' => $e->getMessage()
             ]);
         });
     })->create();
