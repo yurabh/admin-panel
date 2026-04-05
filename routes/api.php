@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Billing\BillingController;
+use App\Http\Controllers\Billing\SubscriptionController;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Page\DeletePageController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\Tag\TagController;
 use App\Http\Controllers\User\UserController;
+use Laravel\Cashier\Http\Controllers\WebhookController;
 
 Route::prefix('admin')
     ->middleware(['auth:sanctum', 'admin'])
@@ -36,7 +39,6 @@ Route::prefix('admin')
             ->only(['index', 'store', 'update', 'destroy', 'show']);
 
         Route::post('/categories', [CategoryController::class, 'store']);
-        Route::get('/categories', [CategoryController::class, 'index']);
         Route::get('/categories/{category}', [CategoryController::class, 'show']);
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
@@ -54,13 +56,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->middleware('subscribed');
+
     Route::post('/comments', [CommentController::class, 'store']);
     Route::get('/comments', [CommentController::class, 'index']);
     Route::get('/comments/{comment}', [CommentController::class, 'show']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+    Route::post('/subscribe', [SubscriptionController::class, 'checkout']);
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel']);
+    Route::get('/subscription/portal', [SubscriptionController::class, 'portal']);
+    Route::get('/billing/info', [BillingController::class, 'show']);
+    Route::get('/billing/invoices', [BillingController::class, 'invoices']);
+    Route::get('/billing/invoices/download', [BillingController::class, 'downloadInvoice'])
+        ->name('api.invoices.download');
+    Route::post('/subscription/start-trial', [SubscriptionController::class, 'startTrial']);
 });
 
+Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
+Route::get('/subscription/success', [SubscriptionController::class, 'success']);
 
 Route::post('/login', AuthController::class);
 Route::post('/register', RegistrationController::class);
