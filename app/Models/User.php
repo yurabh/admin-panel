@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Enums\UserRole;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -15,7 +16,9 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, Billable;
+
+    public const SUBSCRIPTION_NAME = 'default';
 
     /**
      * The attributes that are mass assignable.
