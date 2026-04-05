@@ -18,6 +18,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, Billable;
 
+    public const SUBSCRIPTION_NAME = 'default';
+
     /**
      * The attributes that are mass assignable.
      *
