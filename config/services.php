@@ -38,4 +38,11 @@ return [
     'admin' => [
         'id' => env('ADMIN_USER_ID', 0),
     ],
+
+    'stripe' => [
+        'plans' => [
+            'premium' => env('STRIPE_PRICE_PREMIUM'),
+            'business' => env('STRIPE_PRICE_BUSINESS'),
+        ],
+    ],
 ];
