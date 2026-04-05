@@ -48,13 +48,13 @@ Route::prefix('admin')
         Route::get('/tags/{tag}', [TagController::class, 'show']);
         Route::put('/tags/{tag}', [TagController::class, 'update']);
         Route::delete('/tags/{tag}', [TagController::class, 'destroy']);
+
+        Route::apiResource('users', UserController::class);
     });
 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', LogoutController::class);
-
-    Route::apiResource('users', UserController::class);
 
     Route::get('/categories', [CategoryController::class, 'index'])
         ->middleware('subscribed');
@@ -78,8 +78,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
 Route::get('/subscription/success', [SubscriptionController::class, 'success']);
 
-Route::post('/login', AuthController::class);
-Route::post('/register', RegistrationController::class);
-Route::post('/forgot/password', ForgotPasswordController::class);
-Route::post('/password/reset', ResetPasswordController::class)
-    ->name('password.reset');
+Route::middleware('throttle:6,1')->group(function () {
+    Route::post('/login', AuthController::class);
+    Route::post('/register', RegistrationController::class);
+    Route::post('/forgot/password', ForgotPasswordController::class);
+    Route::post('/password/reset', ResetPasswordController::class)
+        ->name('password.reset');
+});

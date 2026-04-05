@@ -21,7 +21,7 @@ class UpdatePageAction
 
         if ($request->hasFile('image')) {
 
-            $this->updateImageInS3Bucket($data);
+            $this->updateImageInS3Bucket($page);
 
             $data['image'] = $request->file('image')
                 ->store('pages/images', 's3');

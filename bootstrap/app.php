@@ -25,20 +25,26 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (PageException $e) {
+            $status = $e->getCode() ?: 400;
             return response()->json([
-                'message' => 'Page exception was occurred: ' . $e->getMessage()
-            ]);
+                'message' => 'Page exception was occurred: ' . $e->getMessage(),
+                'errors_code' => $status
+            ], $status);
         });
 
         $exceptions->render(function (PostException $e) {
+            $status = $e->getCode() ?: 400;
             return response()->json([
-                'message' => 'Post exception was occurred: ' . $e->getMessage()
-            ]);
+                'message' => 'Post exception was occurred: ' . $e->getMessage(),
+                'errors_code' => $status
+            ], $status);
         });
 
         $exceptions->render(function (BillingException $e) {
+            $status = $e->getCode() ?: 400;
             return response()->json([
-                'message' => $e->getMessage()
-            ]);
+                'message' => $e->getMessage(),
+                'errors_code' => $status
+            ], $status);
         });
     })->create();

@@ -26,7 +26,7 @@ class PostCreateAction
         $post->content = $data['content'];
         $post->slug = Str::slug($data['slug']);
         $post->user_id = $data['user_id'] ?? $post->user_id;
-        $post->is_published = true;
+        $post->is_published = $data['is_published'] ?? false;
         $post->category_id = $data['category_id'] ?? $post->category_id;
         return $post;
     }

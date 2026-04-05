@@ -14,7 +14,7 @@ class PostUpdateAction
     {
         $mappedData = $this->action->mappedData($post, $data);
 
-        $mappedData->update();
+        $mappedData->save();
 
         $tagIds = $data['tags'] ?? [];
 
