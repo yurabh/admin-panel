@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Page\StorePageRequest;
 use App\Http\Resources\Page\PageResource;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OAT;
 
@@ -39,12 +40,11 @@ class StorePageController extends Controller
     public function __invoke(StorePageRequest $request, StorePageAction $action)
     {
         try {
-            $page = $action->handle($request);
+            $page = DB::transaction(fn() => $action->handle($request));
 
             Log::debug('Page were stored');
 
             return PageResource::make($page);
-
         } catch (Exception $e) {
             throw new PageException($e->getMessage(), 0, $e);
         }

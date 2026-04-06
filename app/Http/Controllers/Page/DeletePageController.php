@@ -6,6 +6,7 @@ use App\Exceptions\PageException;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use OpenApi\Attributes as OAT;
@@ -44,22 +45,19 @@ class DeletePageController extends Controller
     )]
     public function __invoke(Page $page)
     {
-        if ($page->image) {
-
-            Storage::disk('s3')->delete($page->image);
-
-            Log::debug('Image was deleted in s3 bucket');
-        }
         try {
-
-            $page->delete();
-
-            Log::debug('Page was deleted');
-
+            DB::transaction(function () use ($page) {
+                $imagePath = $page->image;
+                $page->delete();
+                if ($imagePath) {
+                    Storage::disk('s3')->delete($imagePath);
+                    Log::debug('Image was deleted from s3 bucket');
+                }
+                Log::debug('Page was deleted from database');
+            });
         } catch (Exception $e) {
             throw new PageException($e->getMessage(), 0, $e);
         }
-
         return response()->json([
             'message' => 'Page deleted successfully'
         ]);
