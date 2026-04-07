@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class ShowPageAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle($id): Page|JsonResponse
     {
         try {

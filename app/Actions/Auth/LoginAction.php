@@ -12,17 +12,13 @@ use Illuminate\Validation\ValidationException;
 
 class LoginAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(LoginRequest $request, CreateAccessToken $accessToken): LoginResource
     {
         $data = $request->validated();
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => [__('auth.failed')],
             ]);

@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class CreateTagAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(TagRequest $request): Tag
     {
         $tag = $request->validated();

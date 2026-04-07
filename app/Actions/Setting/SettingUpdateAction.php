@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\Log;
 
 class SettingUpdateAction
 {
-    public function __construct()
-    {
-    }
-
     /**
      * @throws \Throwable
      */

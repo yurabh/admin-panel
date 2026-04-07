@@ -7,10 +7,6 @@ use Illuminate\Support\Str;
 
 class PostCreateAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(array $data, Post $post): Post
     {
         $mappedData = $this->mappedData($post, $data);

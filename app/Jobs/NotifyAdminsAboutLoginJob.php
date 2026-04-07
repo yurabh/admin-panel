@@ -12,7 +12,7 @@ class NotifyAdminsAboutLoginJob implements ShouldQueue
 {
     use Queueable;
 
-    public int $tries = 2;
+    public int $tries = 3;
 
     public function __construct(public User $user)
     {
@@ -23,7 +23,7 @@ class NotifyAdminsAboutLoginJob implements ShouldQueue
         User::query()
             ->where('role', UserRole::ADMIN)
             ->where('id', '!=', $this->user->id)
-            ->chunkById(3, function ($admins) {
+            ->chunkById(100, function ($admins) {
                 foreach ($admins as $admin) {
                     $admin->notify(new AdminLoginAlertNotification($this->user->name));
                 }

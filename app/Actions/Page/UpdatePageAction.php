@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UpdatePageAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(UpdatePageRequest $request, Page $page): Page
     {
         $data = $request->validated();
@@ -34,7 +30,7 @@ class UpdatePageAction
         return $page;
     }
 
-    public function updateImageInS3Bucket(Page $page): void
+    private function updateImageInS3Bucket(Page $page): void
     {
         if (!empty($page->image)) {
 

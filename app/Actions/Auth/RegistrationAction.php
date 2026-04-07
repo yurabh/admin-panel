@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class RegistrationAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(RegisterRequest $request): User
     {
         $data = $request->validated();

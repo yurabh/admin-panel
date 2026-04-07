@@ -11,10 +11,6 @@ use Illuminate\Support\Str;
 
 class ResetPasswordAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(ResetPasswordRequest $request): JsonResponse
     {
         $status = $this->tryResetPassword($request);

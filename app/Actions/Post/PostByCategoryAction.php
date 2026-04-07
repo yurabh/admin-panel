@@ -7,10 +7,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostByCategoryAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(int $categoryId, int $perPage = 10): LengthAwarePaginator
     {
         return Post::query()
