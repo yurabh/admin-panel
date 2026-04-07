@@ -8,6 +8,7 @@ use App\Http\Requests\Page\UpdatePageRequest;
 use App\Http\Resources\Page\PageResource;
 use App\Models\Page;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OAT;
 
 class UpdatePageController extends Controller
@@ -48,6 +49,8 @@ class UpdatePageController extends Controller
     {
         $this->authorize('update', $page);
 
-        return PageResource::make($action->handle($request, $page));
+        $page = DB::transaction(fn() => $action->handle($request, $page));
+
+        return PageResource::make($page);
     }
 }

@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class SettingDeleteAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(string $key): JsonResponse
     {
         $setting = Setting::where('key', $key)->firstOrFail();

@@ -9,6 +9,7 @@ use App\Http\Requests\Comment\CommentRequest;
 use App\Http\Resources\Comment\CommentResource;
 use App\Models\Comment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 use OpenApi\Attributes as OAT;
@@ -74,8 +75,7 @@ class CommentController extends Controller
     )]
     public function store(CommentRequest $request, CreateCommentAction $action)
     {
-        $comment = $action->handle($request);
-
+        $comment = DB::transaction(fn() => $action->handle($request));
         return CommentResource::make($comment);
     }
 
@@ -167,8 +167,7 @@ class CommentController extends Controller
     {
         $this->authorize('update', $comment);
 
-        $comment = $action->handle($request, $comment);
-
+        $comment = DB::transaction(fn() => $action->handle($request, $comment));
         return CommentResource::make($comment);
     }
 

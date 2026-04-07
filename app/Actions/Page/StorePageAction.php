@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class StorePageAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(StorePageRequest $request): Page
     {
         $data = $request->validated();

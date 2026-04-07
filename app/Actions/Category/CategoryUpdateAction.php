@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryUpdateAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(CategoryRequest $request, Category $category): Category
     {
         $data = $request->validated();

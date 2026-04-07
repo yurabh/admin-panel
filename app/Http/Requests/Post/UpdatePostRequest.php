@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
@@ -33,12 +34,13 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules(): array
     {
+        $post = $this->route('post');
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:2000',
-            'category_id' => 'nullable|integer|max:255',
-            'slug' => 'required|string|max:255|unique:posts,slug',
-            'user_id' => 'nullable|integer|max:255',
+            'category_id' => 'nullable|integer|max:12550',
+            'slug' => ['required', 'string', 'max:255', Rule::unique('posts', 'slug')->ignore($post)],
+            'user_id' => 'nullable|integer|max:12550',
             'tags' => 'array',
             'is_published' => 'boolean',
         ];

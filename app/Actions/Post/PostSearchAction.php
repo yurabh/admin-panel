@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PostSearchAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(array $filters): Collection
     {
         return Post::query()

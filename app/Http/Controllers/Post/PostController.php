@@ -91,7 +91,7 @@ class PostController extends Controller
 
         $createdPost = DB::transaction(fn() => $action->handle($data, $post));
 
-        Log::debug('Post stored with id: ' . $post->id);
+        Log::debug('Post stored with id: ' . $createdPost->id);
 
         return PostResource::make($createdPost);
     }

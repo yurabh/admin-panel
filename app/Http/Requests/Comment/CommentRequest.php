@@ -8,7 +8,7 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema(
     schema: 'CommentRequest',
     description: 'Data for creating or updating a comment',
-    required: ['post_id', 'user_id', 'content'],
+    required: ['post_id', 'content'],
     properties: [
         new OAT\Property(property: 'post_id', type: 'integer', example: 10),
         new OAT\Property(property: 'user_id', type: 'integer', example: 1),
@@ -27,10 +27,17 @@ class CommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'post_id' => 'required|exists:posts,id',
-            'user_id' => 'required|exists:users,id',
+            'post_id' => 'required|integer|exists:posts,id',
+            'user_id' => 'required|integer|exists:users,id',
             'content' => 'required|string|max:2000',
             'is_approved' => 'boolean',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'user_id' => $this->user()?->id,
+        ]);
     }
 }
