@@ -7,10 +7,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class LogoutAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(PersonalAccessToken $accessToken): void
     {
         $accessToken->deleteOrFail();

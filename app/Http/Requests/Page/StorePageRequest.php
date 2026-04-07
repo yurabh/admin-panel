@@ -7,7 +7,7 @@ use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
     schema: 'StorePageRequest',
-    required: ['title', 'slug', 'content', 'user_id'],
+    required: ['title', 'slug', 'content'],
     properties: [
         new OAT\Property(property: 'title', type: 'string', example: 'About Our Company', maxLength: 255),
         new OAT\Property(property: 'slug', description: 'Must be unique in pages table', type: 'string', example: 'about-our-company', maxLength: 255),
@@ -36,9 +36,16 @@ class StorePageRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:pages,slug'],
             'content' => ['required', 'string'],
-            'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
             'is_published' => ['boolean'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'user_id' => $this->user()?->id,
+        ]);
     }
 }

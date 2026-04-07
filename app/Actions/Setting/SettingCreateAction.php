@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class SettingCreateAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(SettingCreateRequest $request): Setting
     {
         $data = $request->validated();

@@ -177,6 +177,6 @@ class UserController extends Controller
 
         Log::debug('User removed with id', [$user->id]);
 
-        return response()->json(['message' => 'User deleted']);
+        return response()->noContent();
     }
 }

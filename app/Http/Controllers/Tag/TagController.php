@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Tag\TagRequest;
 use App\Http\Resources\Tag\TagResource;
 use App\Models\Tag;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Attributes as OAT;
 
@@ -64,7 +65,7 @@ class TagController extends Controller
     )]
     public function store(TagRequest $request, CreateTagAction $action): TagResource
     {
-        $tag = $action->handle($request);
+        $tag = DB::transaction(fn() => $action->handle($request));
 
         return TagResource::make($tag);
     }
@@ -97,7 +98,7 @@ class TagController extends Controller
     )]
     public function show(Tag $tag): TagResource
     {
-        Log::debug('Tag found with id: {$tag->id}');
+        Log::debug("Tag found with id: {$tag->id}");
 
         return TagResource::make($tag);
     }
@@ -135,7 +136,7 @@ class TagController extends Controller
     )]
     public function update(TagRequest $request, Tag $tag, UpdateTagAction $action): TagResource
     {
-        $action->handle($request, $tag);
+        $tag = DB::transaction(fn() => $action->handle($request, $tag));
 
         return TagResource::make($tag);
     }
@@ -171,12 +172,12 @@ class TagController extends Controller
             new OAT\Response(response: 403, description: 'Forbidden')
         ]
     )]
-    public function destroy(Tag $tag): JsonResponse
+    public function destroy(Tag $tag): Response
     {
         $tag->delete();
 
         Log::debug('Tag deleted with id: ' . $tag->id);
 
-        return response()->json(['message' => 'Tag deleted'], 204);
+        return response()->noContent();
     }
 }

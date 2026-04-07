@@ -24,8 +24,8 @@ class UserTest extends TestCase
     public function test_index_returns_users_with_relations(): void
     {
         User::factory()->hasPosts(1)->hasComments(1)->create();
-        $response = $this->actingAs($this->admin)
-            ->getJson('/api/users');
+        $response = $this->actingAs($this->admin,'sanctum')
+            ->getJson('/api/admin/users');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -53,7 +53,7 @@ class UserTest extends TestCase
     #[Test]
     public function test_index_returns_401_if_unauthenticated(): void
     {
-        $this->getJson('/api/users')
+        $this->getJson('/api/admin/users')
             ->assertUnauthorized();
     }
 }

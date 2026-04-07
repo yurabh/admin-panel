@@ -37,7 +37,7 @@ class UpdatePageRequest extends FormRequest
             'slug' => ['sometimes', 'string', 'max:255', 'unique:pages,slug'],
             'content' => ['sometimes', 'string'],
             'is_published' => ['sometimes', 'boolean'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'user_id' => ['sometimes', 'integer', 'exists:users,id'],
         ];
     }
