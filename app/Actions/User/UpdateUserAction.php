@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class UpdateUserAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(RegisterRequest $request, User $user): User
     {
         $data = $request->validated();

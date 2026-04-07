@@ -7,10 +7,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostByCategoryIdAndDateFilterAction
 {
-    public function __construct()
-    {
-    }
-
     public function handle(array $filters): LengthAwarePaginator
     {
         return Post::query()

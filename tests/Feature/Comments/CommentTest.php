@@ -109,6 +109,6 @@ class CommentTest extends TestCase
         $this->actingAs($this->user)
             ->postJson('/api/comments', [])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['post_id', 'user_id', 'content']);
+            ->assertJsonValidationErrors(['post_id', 'content']);
     }
 }

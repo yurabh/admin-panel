@@ -11,6 +11,5 @@ Route::get('/', function () {
 Route::get('/email/verify/{id}/{hash}',
     function (EmailVerificationRequest $request) {
         $request->fulfill();
-        return redirect('/');
-    })->middleware(['auth:sanctum', 'signed'])
-    ->name('verification.verify');
+        return response()->json(['message' => 'Email verified successfully!']);
+    })->middleware(['signed']);
