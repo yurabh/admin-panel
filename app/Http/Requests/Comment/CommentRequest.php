@@ -30,7 +30,6 @@ class CommentRequest extends FormRequest
             'post_id' => 'required|integer|exists:posts,id',
             'user_id' => 'required|integer|exists:users,id',
             'content' => 'required|string|max:2000',
-            'is_approved' => 'boolean',
         ];
     }
 

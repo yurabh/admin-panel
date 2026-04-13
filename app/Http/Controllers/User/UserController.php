@@ -6,6 +6,7 @@ use App\Actions\Auth\RegistrationAction;
 use App\Actions\User\UpdateUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -102,18 +103,18 @@ class UserController extends Controller
 
 
     #[OAT\Put(
-        path: '/api/users/{id}',
+        path: '/api/users/{user}',
         description: 'Updates the user data. Requires authorization via UserPolicy.',
         summary: 'Update user profile',
         security: [['bearerAuth' => []]],
         requestBody: new OAT\RequestBody(
             required: true,
-            content: new OAT\JsonContent(ref: '#/components/schemas/RegisterRequest')
+            content: new OAT\JsonContent(ref: '#/components/schemas/UpdateUserRequest')
         ),
         tags: ['Users'],
         parameters: [
             new OAT\Parameter(
-                name: 'id',
+                name: 'user',
                 description: 'ID of the user to update',
                 in: 'path',
                 required: true,
@@ -126,13 +127,13 @@ class UserController extends Controller
                 description: 'User updated successfully',
                 content: new OAT\JsonContent(ref: '#/components/schemas/UserResource')
             ),
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
             new OAT\Response(response: 403, description: 'Forbidden - You cannot update this user'),
             new OAT\Response(response: 404, description: 'User not found'),
-            new OAT\Response(response: 422, description: 'Validation error'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 422, description: 'Validation error')
         ]
     )]
-    public function update(RegisterRequest $request, User $user, UpdateUserAction $action)
+    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action)
     {
         $this->authorize('update', $user);
 

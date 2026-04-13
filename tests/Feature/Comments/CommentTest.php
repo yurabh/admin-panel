@@ -60,7 +60,6 @@ class CommentTest extends TestCase
             'content' => $content,
             'user_id' => $this->user->id,
             'post_id' => $this->post->id,
-            'is_approved' => true,
         ]);
 
         Event::assertDispatched(NewCommentEvent::class, function ($event) use ($commentId) {
