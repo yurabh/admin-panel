@@ -98,7 +98,7 @@ class SubscriptionService
                 ->create(null);
         } catch (Exception $e) {
             Log::error("Free Trial Activation Error: " . $e->getMessage());
-            throw new BillingException("Could not start free trial.");
+            throw new BillingException("Could not start free trial.", 503);
         }
     }
 }
