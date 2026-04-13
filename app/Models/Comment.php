@@ -17,7 +17,6 @@ class Comment extends Model
         'user_id',
         'post_id',
         'content',
-        'is_approved',
     ];
 
     public function user(): BelongsTo

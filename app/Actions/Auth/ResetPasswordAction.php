@@ -5,6 +5,7 @@ namespace App\Actions\Auth;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -30,7 +31,7 @@ class ResetPasswordAction
         return Password::broker()->reset(
             $request->validated(),
             function ($user, $password) {
-                $user->password = $password;
+                $user->password = Hash::make($password);
                 $user->setRememberToken(Str::random(60));
                 $user->save();
                 $user->tokens()->delete();
