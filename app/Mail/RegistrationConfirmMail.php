@@ -28,9 +28,11 @@ class RegistrationConfirmMail extends Mailable
             ['id' => $this->user->id, 'hash' => sha1($this->user->email)]
         );
 
+        $name = e($this->user->name);
+
         return new Content(
             htmlString: "
-            <h1>Вітаємо, . e($this->user->name) .!</h1>
+            <h1>Вітаємо, {$name}. !</h1>;
             <p>Дякуємо за реєстрацію. Щоб завершити, натисніть кнопку нижче:</p>
             <p>
                 <a href='{$url}' style='background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>

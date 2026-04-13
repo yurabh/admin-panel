@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Category;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
@@ -36,7 +37,10 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:categories',
+            'slug' => [
+                'required', 'string',
+                Rule::unique('categories', 'slug')->ignore($this->route('category')),
+            ],
         ];
     }
 }

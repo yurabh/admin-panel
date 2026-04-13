@@ -47,10 +47,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 'errors_code' => $status
             ], $status);
         });
-
-        $exceptions->render(function (BillingException $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ]);
-        });
     })->create();

@@ -59,9 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])
         ->middleware('subscribed');
 
-    Route::get('/categories', [CategoryController::class, 'index'])
-        ->middleware('subscribed');
-
     Route::post('/comments', [CommentController::class, 'store']);
     Route::get('/comments', [CommentController::class, 'index']);
     Route::get('/comments/{comment}', [CommentController::class, 'show']);
