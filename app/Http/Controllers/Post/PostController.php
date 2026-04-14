@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Post;
 
-use App\Actions\Post\PostByCategoryIdAndDateFilterAction;
 use App\Actions\Post\PostByCategoryAction;
+use App\Actions\Post\PostByCategoryIdAndDateFilterAction;
 use App\Actions\Post\PostCreateAction;
 use App\Actions\Post\PostSearchAction;
 use App\Actions\Post\PostSortAction;
@@ -46,7 +46,7 @@ class PostController extends Controller
             new OAT\Response(
                 response: 403,
                 description: 'Forbidden'
-            )
+            ),
         ]
     )]
     public function index()
@@ -57,7 +57,6 @@ class PostController extends Controller
 
         return PostResource::collection($posts);
     }
-
 
     #[OAT\Post(
         path: '/api/admin/posts',
@@ -78,24 +77,24 @@ class PostController extends Controller
                 response: 422,
                 description: 'Validation error'
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     /**
      * Store a newly created resource in storage.
+     *
      * @throws \Throwable
      */
     public function store(Post $post, StorePostRequest $request, PostCreateAction $action)
     {
         $data = $request->validated();
 
-        $createdPost = DB::transaction(fn() => $action->handle($data, $post));
+        $createdPost = DB::transaction(fn () => $action->handle($data, $post));
 
-        Log::debug('Post stored with id: ' . $createdPost->id);
+        Log::debug('Post stored with id: '.$createdPost->id);
 
         return PostResource::make($createdPost);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/posts/{id}',
@@ -109,7 +108,7 @@ class PostController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -121,7 +120,7 @@ class PostController extends Controller
                 response: 404,
                 description: 'Post not found'
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function show(string $id)
@@ -129,15 +128,15 @@ class PostController extends Controller
         try {
             $post = Post::with(['tags', 'category', 'user'])->findOrFail($id);
 
-            Log::debug('Post was listed with id: ' . $post->id);
+            Log::debug('Post was listed with id: '.$post->id);
 
         } catch (Exception $e) {
 
             throw new PostException($e->getMessage(), 0, $e);
         }
+
         return PostResource::make($post);
     }
-
 
     #[OAT\Put(
         path: '/api/admin/posts/{id}',
@@ -155,7 +154,7 @@ class PostController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -165,11 +164,12 @@ class PostController extends Controller
             ),
             new OAT\Response(response: 403, description: 'Forbidden / Unauthorized'),
             new OAT\Response(response: 404, description: 'Post not found'),
-            new OAT\Response(response: 422, description: 'Validation error')
+            new OAT\Response(response: 422, description: 'Validation error'),
         ]
     )]
     /**
      * Update the specified resource in storage.
+     *
      * @throws \Throwable
      */
     public function update(Post $post, UpdatePostRequest $request, PostUpdateAction $action)
@@ -178,13 +178,12 @@ class PostController extends Controller
 
         $data = $request->validated();
 
-        $updatedPost = DB::transaction(fn() => $action->handle($post, $data));
+        $updatedPost = DB::transaction(fn () => $action->handle($post, $data));
 
-        Log::debug('Post updated with id: ' . $updatedPost->id);
+        Log::debug('Post updated with id: '.$updatedPost->id);
 
         return PostResource::make($updatedPost);
     }
-
 
     #[OAT\Delete(
         path: '/api/admin/posts/{id}',
@@ -198,7 +197,7 @@ class PostController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -216,18 +215,17 @@ class PostController extends Controller
             new OAT\Response(
                 response: 403,
                 description: 'Forbidden'
-            )
+            ),
         ]
     )]
     public function destroy(Post $post)
     {
         $post->delete();
 
-        Log::debug('Post deleted with id: ' . $post->id);
+        Log::debug('Post deleted with id: '.$post->id);
 
         return response()->noContent();
     }
-
 
     #[OAT\Get(
         path: '/api/admin/posts/search',
@@ -241,7 +239,7 @@ class PostController extends Controller
                 in: 'query',
                 required: true,
                 schema: new OAT\Schema(type: 'string', minLength: 2)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -251,7 +249,7 @@ class PostController extends Controller
                     type: 'array',
                     items: new OAT\Items(ref: '#/components/schemas/PostResource')
                 )
-            )
+            ),
         ]
     )]
     public function search(Request $request, PostSearchAction $action)
@@ -269,7 +267,6 @@ class PostController extends Controller
         return PostResource::collection($posts);
     }
 
-
     #[OAT\Get(
         path: '/api/admin/posts/sorted-by-date',
         description: 'Get the most recent published posts.',
@@ -283,7 +280,7 @@ class PostController extends Controller
                     type: 'array',
                     items: new OAT\Items(ref: '#/components/schemas/PostResource')
                 )
-            )
+            ),
         ]
     )]
     public function getSortedByDatePublishedAt(PostSortAction $action)
@@ -294,7 +291,6 @@ class PostController extends Controller
 
         return PostResource::collection($posts);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/posts/category/{categoryId}',
@@ -312,7 +308,7 @@ class PostController extends Controller
                 description: 'Page number',
                 in: 'query',
                 schema: new OAT\Schema(type: 'integer', default: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -322,10 +318,10 @@ class PostController extends Controller
                     properties: [
                         new OAT\Property(property: 'data', type: 'array', items: new OAT\Items(ref: '#/components/schemas/PostResource')),
                         new OAT\Property(property: 'meta', type: 'object'),
-                        new OAT\Property(property: 'links', type: 'object')
+                        new OAT\Property(property: 'links', type: 'object'),
                     ]
                 )
-            )
+            ),
         ]
     )]
     public function getByCategoryId(int $categoryId, PostByCategoryAction $action)
@@ -336,7 +332,6 @@ class PostController extends Controller
 
         return PostResource::collection($posts);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/posts/filter',
@@ -349,7 +344,7 @@ class PostController extends Controller
             new OAT\Parameter(name: 'date_to', in: 'query', schema: new OAT\Schema(type: 'string', format: 'date')),
         ],
         responses: [
-            new OAT\Response(response: 200, description: 'Paginated posts', content: new OAT\JsonContent(type: 'object'))
+            new OAT\Response(response: 200, description: 'Paginated posts', content: new OAT\JsonContent(type: 'object')),
         ]
     )]
     public function filter(Request $request, PostByCategoryIdAndDateFilterAction $action)

@@ -10,9 +10,7 @@ class AdminLoginAlertNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public string $adminName)
-    {
-    }
+    public function __construct(public string $adminName) {}
 
     public function via(object $notifiable): array
     {
@@ -25,7 +23,7 @@ class AdminLoginAlertNotification extends Notification
             ->subject('System notification: Login Admin')
             ->greeting("Welcome, {$notifiable->name}!")
             ->line("Admin **{$this->adminName}** now logged into admin panel management")
-            ->line('Date login: ' . now()->format('H:i:s d.m.Y'))
+            ->line('Date login: '.now()->format('H:i:s d.m.Y'))
             ->action('', url('/'));
     }
 }

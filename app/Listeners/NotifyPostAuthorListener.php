@@ -14,8 +14,9 @@ class NotifyPostAuthorListener implements ShouldQueue
         $comment = $event->comment;
         $author = $comment?->post?->user;
 
-        if (!$author) {
-            Log::warning("Could not notify author: post or user no longer exists for comment ID: " . ($comment->id ?? 'unknown'));
+        if (! $author) {
+            Log::warning('Could not notify author: post or user no longer exists for comment ID: '.($comment->id ?? 'unknown'));
+
             return;
         }
         if ($author->id !== $event->comment->user_id) {

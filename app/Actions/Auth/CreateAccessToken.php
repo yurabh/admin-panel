@@ -8,7 +8,7 @@ class CreateAccessToken
 {
     public function handle(User $user, ?string $tokenName = null): string
     {
-        $tokenName ??= 'Token ' . now()->toIso8601String();
+        $tokenName ??= 'Token '.now()->toIso8601String();
 
         return $user->createToken($tokenName)->plainTextToken;
     }

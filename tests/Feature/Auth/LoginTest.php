@@ -44,8 +44,8 @@ class LoginTest extends TestCase
                         'name',
                         'email',
                         'role',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->assertJsonPath('data.user.email', $email);
 

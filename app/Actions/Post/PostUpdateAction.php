@@ -6,9 +6,7 @@ use App\Models\Post;
 
 class PostUpdateAction
 {
-    public function __construct(public PostCreateAction $action)
-    {
-    }
+    public function __construct(public PostCreateAction $action) {}
 
     public function handle(Post $post, array $data): Post
     {

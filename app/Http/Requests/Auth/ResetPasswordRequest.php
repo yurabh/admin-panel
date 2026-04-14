@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use OpenApi\Attributes as OAT;
@@ -21,14 +22,14 @@ class ResetPasswordRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'token' => ['required', 'string'],
             'email' => ['required', 'email', 'exists:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()->symbols()
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()->symbols(),
             ],
         ];
     }

@@ -31,14 +31,14 @@ class CategoryResourceTest extends TestCase
         $this->assertArrayHasKey('posts', $result);
     }
 
-
     private function createCategory(): Category
     {
-        $category = new Category();
+        $category = new Category;
         $category->id = 1;
         $category->name = 'Tech News';
         $category->slug = 'tech-news';
         $category->created_at = now();
+
         return $category;
     }
 }

@@ -30,7 +30,7 @@ class TagController extends Controller
                     items: new OAT\Items(ref: '#/components/schemas/TagResource')
                 )
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function index()
@@ -41,7 +41,6 @@ class TagController extends Controller
 
         return TagResource::collection($tags);
     }
-
 
     #[OAT\Post(
         path: '/api/admin/tags',
@@ -60,16 +59,15 @@ class TagController extends Controller
                 content: new OAT\JsonContent(ref: '#/components/schemas/TagResource')
             ),
             new OAT\Response(response: 422, description: 'Validation error'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function store(TagRequest $request, CreateTagAction $action): TagResource
     {
-        $tag = DB::transaction(fn() => $action->handle($request));
+        $tag = DB::transaction(fn () => $action->handle($request));
 
         return TagResource::make($tag);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/tags/{id}',
@@ -84,7 +82,7 @@ class TagController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -93,7 +91,7 @@ class TagController extends Controller
                 content: new OAT\JsonContent(ref: '#/components/schemas/TagResource')
             ),
             new OAT\Response(response: 404, description: 'Tag not found'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function show(Tag $tag): TagResource
@@ -102,7 +100,6 @@ class TagController extends Controller
 
         return TagResource::make($tag);
     }
-
 
     #[OAT\Put(
         path: '/api/admin/tags/{id}',
@@ -121,7 +118,7 @@ class TagController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -131,16 +128,15 @@ class TagController extends Controller
             ),
             new OAT\Response(response: 404, description: 'Tag not found'),
             new OAT\Response(response: 422, description: 'Validation error'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function update(TagRequest $request, Tag $tag, UpdateTagAction $action): TagResource
     {
-        $tag = DB::transaction(fn() => $action->handle($request, $tag));
+        $tag = DB::transaction(fn () => $action->handle($request, $tag));
 
         return TagResource::make($tag);
     }
-
 
     #[OAT\Delete(
         path: '/api/admin/tags/{id}',
@@ -155,7 +151,7 @@ class TagController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -163,20 +159,20 @@ class TagController extends Controller
                 description: 'Tag deleted successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Tag deleted')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Tag deleted'),
                     ]
                 )
             ),
             new OAT\Response(response: 404, description: 'Tag not found'),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 403, description: 'Forbidden')
+            new OAT\Response(response: 403, description: 'Forbidden'),
         ]
     )]
     public function destroy(Tag $tag): Response
     {
         $tag->delete();
 
-        Log::debug('Tag deleted with id: ' . $tag->id);
+        Log::debug('Tag deleted with id: '.$tag->id);
 
         return response()->noContent();
     }

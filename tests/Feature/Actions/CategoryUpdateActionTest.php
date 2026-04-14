@@ -16,19 +16,20 @@ class CategoryUpdateActionTest extends TestCase
     use RefreshDatabase;
 
     private CategoryUpdateAction $action;
-    private Category $category;
-    private array $data;
 
+    private Category $category;
+
+    private array $data;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->action = new CategoryUpdateAction();
+        $this->action = new CategoryUpdateAction;
 
         $this->category = Category::factory(1)->createOne([
             'name' => 'Old Tech',
-            'slug' => 'old-tech'
+            'slug' => 'old-tech',
         ]);
 
         $this->data = [
@@ -36,7 +37,6 @@ class CategoryUpdateActionTest extends TestCase
             'slug' => 'new-ai-technology',
         ];
     }
-
 
     #[Test]
     public function it_updates_category_name_and_slug_correctly(): void
@@ -50,7 +50,6 @@ class CategoryUpdateActionTest extends TestCase
         $this->assertEquals($this->data, $result->only(['name', 'slug']));
     }
 
-
     #[Test]
     public function it_logs_message_when_category_is_updated(): void
     {
@@ -63,7 +62,6 @@ class CategoryUpdateActionTest extends TestCase
         $this->action->handle($request, $this->category);
     }
 
-
     #[Test]
     public function it_returns_the_updated_category_instance(): void
     {
@@ -73,7 +71,6 @@ class CategoryUpdateActionTest extends TestCase
 
         $this->assertTrue($this->category->is($result));
     }
-
 
     private function createMockRequest(array $data): MockInterface|CategoryRequest
     {

@@ -19,7 +19,7 @@ use OpenApi\Attributes as OAT;
             required: true,
             schema: new OAT\Schema(type: 'string'),
             example: 'in_1TI47gDY7sR3maRKIOw3iWi0'
-        )
+        ),
     ],
     responses: [
         new OAT\Response(
@@ -36,7 +36,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Response(
             response: 401,
             description: 'Unauthenticated'
-        )
+        ),
     ]
 )]
 class DownloadInvoiceRequest extends FormRequest

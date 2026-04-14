@@ -52,7 +52,6 @@ Route::prefix('admin')
         Route::apiResource('users', UserController::class);
     });
 
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', LogoutController::class);
 

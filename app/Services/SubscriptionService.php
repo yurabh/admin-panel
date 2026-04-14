@@ -19,19 +19,20 @@ class SubscriptionService
     public function createCheckoutSession(User $user, string $priceId): string
     {
         if ($user->subscribed(User::SUBSCRIPTION_NAME)) {
-            throw new BillingException("You are already subscribed to this plan.", 409);
+            throw new BillingException('You are already subscribed to this plan.', 409);
         }
         try {
             $checkoutSession = $user->newSubscription(User::SUBSCRIPTION_NAME, $priceId)
                 ->checkout([
-                    'success_url' => config('app.frontend_url') . '/api/subscription/success?session_id={CHECKOUT_SESSION_ID}',
-                    'cancel_url' => config('app.frontend_url') . '/cancel',
+                    'success_url' => config('app.frontend_url').'/api/subscription/success?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => config('app.frontend_url').'/cancel',
                     'payment_method_collection' => 'always',
                 ]);
+
             return $checkoutSession->url;
         } catch (Exception $e) {
-            Log::error("Stripe Checkout Error: " . $e->getMessage());
-            throw new BillingException("Payment service unavailable. Please try again later.", 503);
+            Log::error('Stripe Checkout Error: '.$e->getMessage());
+            throw new BillingException('Payment service unavailable. Please try again later.', 503);
         }
     }
 
@@ -42,14 +43,15 @@ class SubscriptionService
     {
         $subscription = $user->subscription(User::SUBSCRIPTION_NAME);
 
-        if (!$subscription || !$subscription->active()) {
-            throw new BillingException("No active subscription found.", 404);
+        if (! $subscription || ! $subscription->active()) {
+            throw new BillingException('No active subscription found.', 404);
         }
         $subscription->cancel();
+
         return [
             'status' => 'cancelled',
             'ends_at' => $subscription->ends_at?->format('Y-m-d H:i:s'),
-            'message' => 'Subscription cancelled. Access remains active until the end of the period.'
+            'message' => 'Subscription cancelled. Access remains active until the end of the period.',
         ];
     }
 
@@ -58,9 +60,10 @@ class SubscriptionService
      */
     public function getBillingPortalUrl(User $user): string
     {
-        if (!$user->hasStripeId()) {
-            throw new BillingException("You do not have a billing history yet.", 404);
+        if (! $user->hasStripeId()) {
+            throw new BillingException('You do not have a billing history yet.', 404);
         }
+
         return $user->redirectToBillingPortal(url('/dashboard'))->getTargetUrl();
     }
 
@@ -72,15 +75,16 @@ class SubscriptionService
         Stripe::setApiKey(config('cashier.secret'));
         $session = StripeCheckoutSession::retrieve([
             'id' => $sessionId,
-            'expand' => ['subscription.default_payment_method']
+            'expand' => ['subscription.default_payment_method'],
         ]);
         $user = Cashier::findBillable($session->customer);
-        if (!$user) {
+        if (! $user) {
             return null;
         }
         if ($session->subscription && $session->subscription->default_payment_method) {
             $user->updateDefaultPaymentMethod($session->subscription->default_payment_method->id);
         }
+
         return $user->refresh();
     }
 
@@ -90,15 +94,15 @@ class SubscriptionService
     public function startFreeTrialWithoutCard(User $user, string $priceId): void
     {
         if ($user->subscriptions()->exists()) {
-            throw new BillingException("You have already used your trial period.", 409);
+            throw new BillingException('You have already used your trial period.', 409);
         }
         try {
             $user->newSubscription(User::SUBSCRIPTION_NAME, $priceId)
                 ->trialDays(5)
                 ->create(null);
         } catch (Exception $e) {
-            Log::error("Free Trial Activation Error: " . $e->getMessage());
-            throw new BillingException("Could not start free trial.", 503);
+            Log::error('Free Trial Activation Error: '.$e->getMessage());
+            throw new BillingException('Could not start free trial.', 503);
         }
     }
 }

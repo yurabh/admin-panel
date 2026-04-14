@@ -31,7 +31,7 @@ class UpdatePageController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -42,14 +42,14 @@ class UpdatePageController extends Controller
             new OAT\Response(response: 403, description: 'Forbidden - User not authorized to update this page'),
             new OAT\Response(response: 404, description: 'Page not found'),
             new OAT\Response(response: 422, description: 'Validation error'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function __invoke(Page $page, UpdatePageRequest $request, UpdatePageAction $action)
     {
         $this->authorize('update', $page);
 
-        $page = DB::transaction(fn() => $action->handle($request, $page));
+        $page = DB::transaction(fn () => $action->handle($request, $page));
 
         return PageResource::make($page);
     }

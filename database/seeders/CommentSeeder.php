@@ -18,8 +18,8 @@ class CommentSeeder extends Seeder
         $posts = Post::all();
 
         Comment::factory(5)->create([
-            'user_id' => fn() => $users->random()->id,
-            'post_id' => fn() => $posts->random()->id,
+            'user_id' => fn () => $users->random()->id,
+            'post_id' => fn () => $posts->random()->id,
         ]);
     }
 }

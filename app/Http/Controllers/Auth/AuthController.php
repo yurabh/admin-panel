@@ -10,7 +10,6 @@ use OpenApi\Attributes as OAT;
 
 class AuthController extends Controller
 {
-
     #[OAT\Post(
         path: '/api/login',
         description: 'Authenticates a user and returns an access token with user details.',
@@ -29,12 +28,12 @@ class AuthController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation error (invalid credentials)'
-            )
+            ),
         ]
     )]
-    public function __invoke(LoginRequest      $request,
-                             CreateAccessToken $accessToken,
-                             LoginAction       $action)
+    public function __invoke(LoginRequest $request,
+        CreateAccessToken $accessToken,
+        LoginAction $action)
     {
         return $action->handle($request, $accessToken);
     }

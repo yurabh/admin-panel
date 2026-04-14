@@ -10,16 +10,12 @@ class SettingChangedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public string $settingKey)
-    {
-    }
-
+    public function __construct(public string $settingKey) {}
 
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
-
 
     public function toMail(object $notifiable): MailMessage
     {

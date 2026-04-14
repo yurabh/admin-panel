@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use OpenApi\Attributes as OAT;
-use Illuminate\Database\Eloquent\Builder;
-
 
 #[OAT\Schema(
     schema: 'PostResource',
@@ -30,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 )]
 /**
  * @property mixed $user
+ *
  * @method static factory()
  */
 class Post extends Model
@@ -97,7 +97,7 @@ class Post extends Model
             $q->where('category_id', $id);
         })
             ->when(isset($filters['is_published']), function ($q) use ($filters) {
-                $q->where('is_published', (bool)$filters['is_published']);
+                $q->where('is_published', (bool) $filters['is_published']);
             })
             ->when($filters['date_from'] ?? null, function ($q, $date) {
                 $q->whereNotNull('published_at')

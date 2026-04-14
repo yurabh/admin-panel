@@ -53,8 +53,8 @@ class PostTest extends TestCase
                     'id', 'title', 'slug', 'content', 'is_published',
                     'category' => ['id', 'name', 'slug'],
                     'tags' => [['id', 'name', 'slug']],
-                    'author' => ['id', 'name']
-                ]
+                    'author' => ['id', 'name'],
+                ],
             ]);
 
         $postId = $response->json('data.id');
@@ -75,7 +75,7 @@ class PostTest extends TestCase
         }
 
         Log::shouldHaveReceived('debug')
-            ->with('Post stored with id: ' . $postId)
+            ->with('Post stored with id: '.$postId)
             ->once();
     }
 

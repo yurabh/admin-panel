@@ -16,8 +16,8 @@ class BillingService
     {
         $invoice = $user->findInvoice($invoiceId);
 
-        if (!$invoice) {
-            throw new BillingException("Invoice not found or access denied.", 404);
+        if (! $invoice) {
+            throw new BillingException('Invoice not found or access denied.', 404);
         }
 
         return $invoice->download([

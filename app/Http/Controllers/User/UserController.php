@@ -34,14 +34,13 @@ class UserController extends Controller
                 )
             ),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 403, description: 'Forbidden')
+            new OAT\Response(response: 403, description: 'Forbidden'),
         ]
     )]
     public function index()
     {
         return UserResource::collection(User::with(['posts', 'comments', 'pages'])->get());
     }
-
 
     #[OAT\Post(
         path: '/api/users',
@@ -61,15 +60,15 @@ class UserController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation errors (e.g. email already exists)'
-            )
+            ),
         ]
     )]
     public function store(RegisterRequest $request, RegistrationAction $action)
     {
-        $user = DB::transaction(callback: fn() => $action->handle($request));
+        $user = DB::transaction(callback: fn () => $action->handle($request));
+
         return UserResource::make($user);
     }
-
 
     #[OAT\Get(
         path: '/api/users/{id}',
@@ -84,7 +83,7 @@ class UserController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -93,14 +92,13 @@ class UserController extends Controller
                 content: new OAT\JsonContent(ref: '#/components/schemas/UserResource')
             ),
             new OAT\Response(response: 404, description: 'User not found'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function show(User $user)
     {
         return UserResource::make($user);
     }
-
 
     #[OAT\Put(
         path: '/api/users/{user}',
@@ -119,7 +117,7 @@ class UserController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -130,17 +128,17 @@ class UserController extends Controller
             new OAT\Response(response: 401, description: 'Unauthenticated'),
             new OAT\Response(response: 403, description: 'Forbidden - You cannot update this user'),
             new OAT\Response(response: 404, description: 'User not found'),
-            new OAT\Response(response: 422, description: 'Validation error')
+            new OAT\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action)
     {
         $this->authorize('update', $user);
 
-        $user = DB::transaction(callback: fn() => $action->handle($request, $user));
+        $user = DB::transaction(callback: fn () => $action->handle($request, $user));
+
         return UserResource::make($user);
     }
-
 
     #[OAT\Delete(
         path: '/api/users/{id}',
@@ -155,7 +153,7 @@ class UserController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -163,13 +161,13 @@ class UserController extends Controller
                 description: 'User deleted successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'User deleted')
+                        new OAT\Property(property: 'message', type: 'string', example: 'User deleted'),
                     ]
                 )
             ),
             new OAT\Response(response: 404, description: 'User not found'),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 403, description: 'Forbidden (Unauthorized)')
+            new OAT\Response(response: 403, description: 'Forbidden (Unauthorized)'),
         ]
     )]
     public function destroy(User $user)

@@ -14,7 +14,6 @@ use OpenApi\Attributes as OAT;
 
 class CategoryController extends Controller
 {
-
     #[OAT\Get(
         path: '/api/admin/categories',
         description: 'Retrieves all categories along with their associated posts.',
@@ -32,7 +31,7 @@ class CategoryController extends Controller
             new OAT\Response(
                 response: 401,
                 description: 'Unauthenticated'
-            )
+            ),
         ]
     )]
     public function index()
@@ -43,7 +42,6 @@ class CategoryController extends Controller
 
         return CategoryResource::collection($categories);
     }
-
 
     #[OAT\Post(
         path: '/api/admin/categories',
@@ -71,20 +69,20 @@ class CategoryController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation errors'
-            )
+            ),
         ]
     )]
     /**
      * Store a newly created resource in storage.
+     *
      * @throws \Throwable
      */
     public function store(CategoryRequest $request, CategoryCreateAction $action)
     {
-        $category = DB::transaction(fn() => $action->handle($request));
+        $category = DB::transaction(fn () => $action->handle($request));
 
         return CategoryResource::make($category);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/categories/{id}',
@@ -98,7 +96,7 @@ class CategoryController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -113,18 +111,17 @@ class CategoryController extends Controller
             new OAT\Response(
                 response: 404,
                 description: 'Category not found'
-            )
+            ),
         ]
     )]
     public function show(Category $category)
     {
         $category->load(['posts']);
 
-        Log::debug('Category found with id: ' . $category->id);
+        Log::debug('Category found with id: '.$category->id);
 
         return CategoryResource::make($category);
     }
-
 
     #[OAT\Put(
         path: '/api/admin/categories/{id}',
@@ -142,7 +139,7 @@ class CategoryController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -161,20 +158,20 @@ class CategoryController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation errors'
-            )
+            ),
         ]
     )]
     /**
      * Update the specified resource in storage.
+     *
      * @throws \Throwable
      */
     public function update(Category $category, CategoryRequest $request, CategoryUpdateAction $action)
     {
-        $category = DB::transaction(fn() => $action->handle($request, $category));
+        $category = DB::transaction(fn () => $action->handle($request, $category));
 
         return CategoryResource::make($category);
     }
-
 
     #[OAT\Delete(
         path: '/api/admin/categories/{id}',
@@ -188,7 +185,7 @@ class CategoryController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -196,7 +193,7 @@ class CategoryController extends Controller
                 description: 'Category deleted successfully or deletion blocked by existing posts',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Category deleted with id: 1')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Category deleted with id: 1'),
                     ],
                     type: 'object'
                 )
@@ -208,7 +205,7 @@ class CategoryController extends Controller
             new OAT\Response(
                 response: 404,
                 description: 'Category not found'
-            )
+            ),
         ]
     )]
     public function destroy(Category $category)
@@ -219,8 +216,8 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        Log::debug('Category deleted with id: ' . $category->id);
+        Log::debug('Category deleted with id: '.$category->id);
 
-        return response()->json(['message' => 'Category deleted with id: ' . $category->id]);
+        return response()->json(['message' => 'Category deleted with id: '.$category->id]);
     }
 }

@@ -18,6 +18,7 @@ class CommentTest extends TestCase
     use RefreshDatabase;
 
     private readonly User $user;
+
     private readonly Post $post;
 
     protected function setUp(): void
@@ -50,7 +51,7 @@ class CommentTest extends TestCase
             ])
             ->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'is_approved', 'user', 'post']
+                'data' => ['id', 'content', 'is_approved', 'user', 'post'],
             ]);
 
         $commentId = $response->json('data.id');
@@ -73,7 +74,7 @@ class CommentTest extends TestCase
         $comment = Comment::factory()->create([
             'user_id' => $this->user->id,
             'post_id' => $this->post->id,
-            'content' => 'Sample comment content'
+            'content' => 'Sample comment content',
         ]);
 
         Log::shouldReceive('debug')->atLeast()->once();

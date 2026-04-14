@@ -27,15 +27,15 @@ class SettingController extends Controller
                 description: 'Successful operation',
                 content: new OAT\JsonContent(
                     type: 'object',
-                    example: array(
+                    example: [
                         'site_name' => 'My Admin Panel',
                         'site_logo' => '/images/logo.png',
-                        'maintenance_mode' => 'false'
-                    ),
+                        'maintenance_mode' => 'false',
+                    ],
                     additionalProperties: new OAT\AdditionalProperties(type: 'string')
                 )
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function index()
@@ -46,7 +46,6 @@ class SettingController extends Controller
             $allCached
         );
     }
-
 
     #[OAT\Post(
         path: '/api/admin/settings',
@@ -66,22 +65,22 @@ class SettingController extends Controller
             ),
             new OAT\Response(response: 422, description: 'Validation error'),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 403, description: 'Forbidden')
+            new OAT\Response(response: 403, description: 'Forbidden'),
         ]
     )]
     /**
      * Store a newly created resource in storage.
+     *
      * @throws \Throwable
      */
     public function store(SettingCreateRequest $request, SettingCreateAction $action)
     {
-        $setting = DB::transaction(fn() => $action->handle($request));
+        $setting = DB::transaction(fn () => $action->handle($request));
 
         Log::debug('Setting created', ['setting' => $setting->id]);
 
         return SettingResource::make($setting);
     }
-
 
     #[OAT\Get(
         path: '/api/admin/settings/{key}',
@@ -96,7 +95,7 @@ class SettingController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'string', example: 'site_name')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -105,7 +104,7 @@ class SettingController extends Controller
                 content: new OAT\JsonContent(
                     properties: [
                         new OAT\Property(property: 'key', type: 'string', example: 'site_name'),
-                        new OAT\Property(property: 'value', type: 'string', example: 'My Admin Panel')
+                        new OAT\Property(property: 'value', type: 'string', example: 'My Admin Panel'),
                     ]
                 )
             ),
@@ -114,11 +113,11 @@ class SettingController extends Controller
                 description: 'Setting not found',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Not found')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Not found'),
                     ]
                 )
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function show(string $key)
@@ -128,7 +127,6 @@ class SettingController extends Controller
         return $value ? response()->json(['key' => $key, 'value' => $value])
             : response()->json(['message' => 'Not found'], 404);
     }
-
 
     /**
      * @throws \Throwable
@@ -150,7 +148,7 @@ class SettingController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -160,7 +158,7 @@ class SettingController extends Controller
             ),
             new OAT\Response(response: 404, description: 'Setting not found'),
             new OAT\Response(response: 422, description: 'Validation error'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function update(SettingUpdateRequest $request, Setting $setting, SettingUpdateAction $action)
@@ -169,7 +167,6 @@ class SettingController extends Controller
 
         return SettingResource::make($setting);
     }
-
 
     #[OAT\Delete(
         path: '/api/admin/settings/{key}',
@@ -184,7 +181,7 @@ class SettingController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'string', example: 'site_name')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -192,13 +189,13 @@ class SettingController extends Controller
                 description: 'Setting deleted successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Setting deleted successfully')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Setting deleted successfully'),
                     ]
                 )
             ),
             new OAT\Response(response: 404, description: 'Setting not found'),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 403, description: 'Forbidden')
+            new OAT\Response(response: 403, description: 'Forbidden'),
         ]
     )]
     public function destroy(string $key, SettingDeleteAction $action)

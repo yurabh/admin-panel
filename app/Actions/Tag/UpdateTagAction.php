@@ -14,7 +14,7 @@ class UpdateTagAction
 
         $tag->update($data);
 
-        Log::debug('Tag updated with id: ' . $tag->id);
+        Log::debug('Tag updated with id: '.$tag->id);
 
         return $tag;
     }

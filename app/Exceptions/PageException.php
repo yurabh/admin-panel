@@ -4,6 +4,4 @@ namespace App\Exceptions;
 
 use RuntimeException;
 
-class PageException extends RuntimeException
-{
-}
+class PageException extends RuntimeException {}

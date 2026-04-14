@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OAT;
 
@@ -62,13 +63,12 @@ use OpenApi\Attributes as OAT;
  */
 class PostResource extends JsonResource
 {
-
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public function toArray(\Illuminate\Http\Request $request): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
@@ -82,7 +82,7 @@ class PostResource extends JsonResource
                 'name' => $this->category->name,
                 'slug' => $this->category->slug,
             ] : null,
-            'tags' => $this->tags->map(fn($tag) => [
+            'tags' => $this->tags->map(fn ($tag) => [
                 'id' => $tag->id,
                 'name' => $tag->name,
                 'slug' => $tag->slug,

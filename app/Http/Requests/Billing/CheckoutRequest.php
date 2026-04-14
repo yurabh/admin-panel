@@ -21,7 +21,7 @@ use OpenApi\Attributes as OAT;
                     description: 'Stripe Price API ID',
                     type: 'string',
                     example: 'price_1TI47gDY7sR3maRKIOw3iWi0'
-                )
+                ),
             ]
         )
     ),
@@ -36,7 +36,7 @@ use OpenApi\Attributes as OAT;
                         property: 'url',
                         type: 'string',
                         example: 'https://stripe.com...'
-                    )
+                    ),
                 ]
             )
         ),
@@ -51,7 +51,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Response(
             response: 401,
             description: 'Unauthenticated (Missing or invalid Sanctum token)'
-        )
+        ),
     ]
 )]
 class CheckoutRequest extends FormRequest

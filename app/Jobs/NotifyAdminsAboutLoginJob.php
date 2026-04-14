@@ -14,9 +14,7 @@ class NotifyAdminsAboutLoginJob implements ShouldQueue
 
     public int $tries = 3;
 
-    public function __construct(public User $user)
-    {
-    }
+    public function __construct(public User $user) {}
 
     public function handle(): void
     {

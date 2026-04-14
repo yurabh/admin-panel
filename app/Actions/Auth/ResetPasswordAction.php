@@ -17,7 +17,8 @@ class ResetPasswordAction
         $status = $this->tryResetPassword($request);
 
         if ($status === Password::PASSWORD_RESET) {
-            Log::debug("Password reset successfully");
+            Log::debug('Password reset successfully');
+
             return response()->json(['Password reset successfully']);
         }
 

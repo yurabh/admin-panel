@@ -4,7 +4,6 @@ namespace App\Actions\Comment;
 
 use App\Http\Requests\Comment\CommentRequest;
 use App\Models\Comment;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UpdateCommentAction
@@ -20,7 +19,7 @@ class UpdateCommentAction
 
         $comment->update($data);
 
-        Log::debug('Comment updated with id: ' . $comment->id);
+        Log::debug('Comment updated with id: '.$comment->id);
 
         return $comment;
     }

@@ -31,14 +31,14 @@ class RegistrationController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation error (e.g., email already taken)'
-            )
+            ),
         ]
     )]
-    public function __invoke(RegisterRequest    $request,
-                             CreateAccessToken  $accessToken,
-                             RegistrationAction $action)
+    public function __invoke(RegisterRequest $request,
+        CreateAccessToken $accessToken,
+        RegistrationAction $action)
     {
-        $user = DB::transaction(callback: fn() => $action->handle($request));
+        $user = DB::transaction(callback: fn () => $action->handle($request));
 
         $token = $accessToken->handle($user);
 
@@ -46,7 +46,7 @@ class RegistrationController extends Controller
 
         return new LoginResource([
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ]);
     }
 }

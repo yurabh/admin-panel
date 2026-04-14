@@ -24,7 +24,7 @@ class ForgotPasswordController extends Controller
                 description: 'Reset link sent successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'We have emailed your password reset link.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'We have emailed your password reset link.'),
                     ]
                 )
             ),
@@ -33,11 +33,11 @@ class ForgotPasswordController extends Controller
                 description: 'Unable to send reset link',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'error', type: 'string', example: 'We can\'t find a user with that email address.')
+                        new OAT\Property(property: 'error', type: 'string', example: 'We can\'t find a user with that email address.'),
                     ]
                 )
             ),
-            new OAT\Response(response: 422, description: 'Validation error')
+            new OAT\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function __invoke(ForgotPasswordRequest $request)
@@ -45,6 +45,7 @@ class ForgotPasswordController extends Controller
         $status = Password::broker()->sendResetLink(
             $request->validated()
         );
+
         return $status === Password::RESET_LINK_SENT
             ? response()->json(['message' => __($status)])
             : response()->json(['error' => __($status)], 400);
