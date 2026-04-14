@@ -16,7 +16,6 @@ class RegistrationEmailConfirmNotification extends Notification
         return ['mail'];
     }
 
-
     public function toMail(object $notifiable): Mailable
     {
         return (new RegistrationConfirmMail($notifiable))

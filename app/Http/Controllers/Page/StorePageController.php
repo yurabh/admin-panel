@@ -34,13 +34,13 @@ class StorePageController extends Controller
             ),
             new OAT\Response(response: 422, description: 'Validation error'),
             new OAT\Response(response: 401, description: 'Unauthenticated'),
-            new OAT\Response(response: 500, description: 'Server error / PageException')
+            new OAT\Response(response: 500, description: 'Server error / PageException'),
         ]
     )]
     public function __invoke(StorePageRequest $request, StorePageAction $action)
     {
         try {
-            $page = DB::transaction(fn() => $action->handle($request));
+            $page = DB::transaction(fn () => $action->handle($request));
 
             Log::debug('Page were stored');
 

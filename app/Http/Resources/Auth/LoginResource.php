@@ -18,10 +18,10 @@ use OpenApi\Attributes as OAT;
                 new OAT\Property(property: 'id', type: 'integer', example: 1),
                 new OAT\Property(property: 'name', type: 'string', example: 'Yuriy'),
                 new OAT\Property(property: 'email', type: 'string', example: 'yuriy@example.com'),
-                new OAT\Property(property: 'role', ref: '#/components/schemas/UserRole')
+                new OAT\Property(property: 'role', ref: '#/components/schemas/UserRole'),
             ],
             type: 'object'
-        )
+        ),
     ],
     type: 'object'
 )]
@@ -42,7 +42,7 @@ class LoginResource extends JsonResource
                 'name' => $this->resource['user']->name,
                 'email' => $this->resource['user']->email,
                 'role' => $this->resource['user']->role,
-            ]
+            ],
         ];
     }
 }

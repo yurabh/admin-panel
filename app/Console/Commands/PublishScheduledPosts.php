@@ -31,12 +31,13 @@ class PublishScheduledPosts extends Command
         $count = $postsToPublish->count();
 
         if ($count === 0) {
-            $this->comment("[" . now() . "] don't publish anything");
+            $this->comment('['.now()."] don't publish anything");
+
             return;
         }
         $postsToPublish->update(['is_published' => true]);
 
-        $this->info("[" . now() . "] Posts successfully published: {$count}");
+        $this->info('['.now()."] Posts successfully published: {$count}");
     }
 
     private function findPostsToPublish()

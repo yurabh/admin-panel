@@ -46,7 +46,7 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'is_approved' => (bool)$this->is_approved,
+            'is_approved' => (bool) $this->is_approved,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,

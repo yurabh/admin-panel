@@ -18,7 +18,7 @@ class LoginAction
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => [__('auth.failed')],
             ]);
@@ -32,7 +32,7 @@ class LoginAction
 
         return new LoginResource([
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ]);
     }
 }

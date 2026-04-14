@@ -6,9 +6,9 @@ use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Mockery;
 
 class SettingTest extends TestCase
 {
@@ -40,7 +40,7 @@ class SettingTest extends TestCase
             ->postJson('/api/admin/settings', $payload)
             ->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'key', 'value']
+                'data' => ['id', 'key', 'value'],
             ]);
 
         $settingId = $response->json('data.id');
@@ -61,7 +61,7 @@ class SettingTest extends TestCase
     {
         $setting = Setting::create([
             'key' => 'theme_color',
-            'value' => 'blue'
+            'value' => 'blue',
         ]);
 
         $this->actingAs($this->admin)
@@ -69,7 +69,7 @@ class SettingTest extends TestCase
             ->assertOk()
             ->assertJson([
                 'key' => 'theme_color',
-                'value' => 'blue'
+                'value' => 'blue',
             ]);
     }
 
@@ -87,13 +87,13 @@ class SettingTest extends TestCase
     {
         Setting::create([
             'key' => 'unique_key',
-            'value' => 'some value'
+            'value' => 'some value',
         ]);
 
         $this->actingAs($this->admin)
             ->postJson('/api/admin/settings', [
                 'key' => 'unique_key',
-                'value' => 'some value'
+                'value' => 'some value',
             ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['key']);

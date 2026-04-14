@@ -20,9 +20,8 @@ class ShowPageActionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->action = new ShowPageAction();
+        $this->action = new ShowPageAction;
     }
-
 
     #[Test]
     public function it_returns_page_if_found(): void
@@ -45,7 +44,6 @@ class ShowPageActionTest extends TestCase
 
         $this->assertEquals($expected, $result->only(['title', 'slug', 'content', 'is_published', 'user_id']));
     }
-
 
     #[Test]
     public function it_logs_error_and_throws_page_exception_when_not_found(): void

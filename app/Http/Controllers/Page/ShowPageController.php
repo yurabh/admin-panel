@@ -21,7 +21,7 @@ class ShowPageController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer', example: 1)
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -30,7 +30,7 @@ class ShowPageController extends Controller
                 content: new OAT\JsonContent(ref: '#/components/schemas/PageResource')
             ),
             new OAT\Response(response: 404, description: 'Page not found'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function __invoke($id, ShowPageAction $action)

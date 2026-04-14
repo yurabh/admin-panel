@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\HigherOrderCollectionProxy;
 
 /**
- * @property \Illuminate\Support\HigherOrderCollectionProxy|mixed $id
+ * @property HigherOrderCollectionProxy|mixed $id
+ *
  * @method static factory(int $int)
  */
 class Category extends Model

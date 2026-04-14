@@ -30,14 +30,14 @@ use OpenApi\Attributes as OAT;
                             new OAT\Property(property: 'ends_at', type: 'string', format: 'date-time', example: '2024-12-31 23:59:59', nullable: true),
                             new OAT\Property(property: 'card_brand', type: 'string', example: 'Visa'),
                             new OAT\Property(property: 'card_last_four', type: 'string', example: '4242'),
-                            new OAT\Property(property: 'card_display', type: 'string', example: 'Visa •••• 4242')
+                            new OAT\Property(property: 'card_display', type: 'string', example: 'Visa •••• 4242'),
                         ],
                         type: 'object'
-                    )
+                    ),
                 ]
             )
         ),
-        new OAT\Response(response: 401, description: 'Unauthenticated')
+        new OAT\Response(response: 401, description: 'Unauthenticated'),
     ]
 )]
 class BillingResource extends JsonResource
@@ -45,6 +45,7 @@ class BillingResource extends JsonResource
     public function toArray(Request $request): array
     {
         $subscription = $this->subscription('default');
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -57,7 +58,7 @@ class BillingResource extends JsonResource
                 'card_brand' => ucfirst($this->pm_type),
                 'card_last_four' => $this->pm_last_four,
                 'card_display' => $this->pm_type
-                    ? ucfirst($this->pm_type) . " •••• " . $this->pm_last_four
+                    ? ucfirst($this->pm_type).' •••• '.$this->pm_last_four
                     : 'No card linked',
             ],
         ];

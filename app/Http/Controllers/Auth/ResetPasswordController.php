@@ -25,7 +25,7 @@ class ResetPasswordController extends Controller
                 description: 'Password reset successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Your password has been reset.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Your password has been reset.'),
                     ]
                 )
             ),
@@ -34,15 +34,15 @@ class ResetPasswordController extends Controller
                 description: 'Invalid token or email',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'email', type: 'string', example: 'This password reset token is invalid.')
+                        new OAT\Property(property: 'email', type: 'string', example: 'This password reset token is invalid.'),
                     ]
                 )
             ),
-            new OAT\Response(response: 422, description: 'Validation error')
+            new OAT\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function __invoke(ResetPasswordRequest $request, ResetPasswordAction $action)
     {
-        return DB::transaction(fn() => $action->handle($request));
+        return DB::transaction(fn () => $action->handle($request));
     }
 }

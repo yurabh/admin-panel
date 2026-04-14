@@ -11,16 +11,12 @@ class NewCommentNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public Comment $comment)
-    {
-    }
-
+    public function __construct(public Comment $comment) {}
 
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
-
 
     public function toMail(object $notifiable): NewCommentMail
     {

@@ -10,6 +10,6 @@ class RegistrationListener implements ShouldQueue
 {
     public function handle(RegistrationEvent $event): void
     {
-        $event->user->notify(new RegistrationEmailConfirmNotification());
+        $event->user->notify(new RegistrationEmailConfirmNotification);
     }
 }

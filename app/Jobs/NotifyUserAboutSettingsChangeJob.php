@@ -15,9 +15,7 @@ class NotifyUserAboutSettingsChangeJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public User $user, public string $settingKey)
-    {
-    }
+    public function __construct(public User $user, public string $settingKey) {}
 
     public function handle(): void
     {

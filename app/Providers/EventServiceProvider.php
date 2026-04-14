@@ -10,7 +10,6 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventSer
 
 class EventServiceProvider extends BaseEventServiceProvider
 {
-
     protected $listen = [
         RegistrationEvent::class => [
             RegistrationListener::class,
@@ -19,8 +18,6 @@ class EventServiceProvider extends BaseEventServiceProvider
             NotifyPostAuthorListener::class,
         ],
     ];
-
-
 
     /**
      * Register services.
@@ -32,12 +29,8 @@ class EventServiceProvider extends BaseEventServiceProvider
         parent::register();
     }
 
-
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-
-    }
+    public function boot(): void {}
 }

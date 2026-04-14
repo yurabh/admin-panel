@@ -15,9 +15,8 @@ class UserUpdateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->policy = new UserPolicy();
+        $this->policy = new UserPolicy;
     }
-
 
     #[Test]
     public function an_admin_can_update_any_user(): void
@@ -26,7 +25,7 @@ class UserUpdateTest extends TestCase
 
         $admin->method('__get')->willReturnMap([
             ['role', UserRole::ADMIN],
-            ['id', 1]
+            ['id', 1],
         ]);
 
         $someUser = $this->getMock();
@@ -34,14 +33,13 @@ class UserUpdateTest extends TestCase
         $this->assertTrue($this->policy->update($admin, $someUser));
     }
 
-
     #[Test]
     public function a_regular_user_cannot_update_others(): void
     {
         $someUser = $this->getMock();
 
         $someUser->method('__get')
-            ->willReturnCallback(fn($prop) => match ($prop) {
+            ->willReturnCallback(fn ($prop) => match ($prop) {
                 'id' => 1,
                 'role' => UserRole::USER,
                 default => null
@@ -55,7 +53,6 @@ class UserUpdateTest extends TestCase
 
         $this->assertFalse($this->policy->update($someUser, $anotherUser));
     }
-
 
     private function getMock(): User
     {

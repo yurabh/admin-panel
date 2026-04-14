@@ -14,9 +14,7 @@ class SubscriptionController extends Controller
 {
     public function __construct(
         protected SubscriptionService $subscriptionService
-    )
-    {
-    }
+    ) {}
 
     #[OAT\Post(
         path: '/api/subscribe',
@@ -33,7 +31,7 @@ class SubscriptionController extends Controller
                         description: 'The Stripe Price ID from your dashboard',
                         type: 'string',
                         example: 'price_1TI47gDY7sR3maRKIOw3iWi0'
-                    )
+                    ),
                 ]
             )
         ),
@@ -44,7 +42,7 @@ class SubscriptionController extends Controller
                 description: 'Checkout session created successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'url', type: 'string', example: 'https://stripe.com...')
+                        new OAT\Property(property: 'url', type: 'string', example: 'https://stripe.com...'),
                     ]
                 )
             ),
@@ -53,7 +51,7 @@ class SubscriptionController extends Controller
                 description: 'Conflict: User is already subscribed to this plan',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'You are already subscribed to this plan.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'You are already subscribed to this plan.'),
                     ]
                 )
             ),
@@ -62,7 +60,7 @@ class SubscriptionController extends Controller
                 description: 'Unprocessable Entity: Validation failed (invalid price_id)',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'The selected price_id is invalid.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'The selected price_id is invalid.'),
                     ]
                 )
             ),
@@ -73,7 +71,7 @@ class SubscriptionController extends Controller
             new OAT\Response(
                 response: 500,
                 description: 'Internal Server Error: Payment service unavailable'
-            )
+            ),
         ]
     )]
     public function checkout(CheckoutRequest $request): JsonResponse
@@ -82,6 +80,7 @@ class SubscriptionController extends Controller
             $url = $this->subscriptionService->createCheckoutSession(
                 $request->user(),
                 $request->validated('price_id'));
+
             return response()->json(['url' => $url], 201);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 500);
@@ -106,10 +105,10 @@ class SubscriptionController extends Controller
                             properties: [
                                 new OAT\Property(property: 'status', type: 'string', example: 'cancelled'),
                                 new OAT\Property(property: 'ends_at', type: 'string', example: '2024-12-31 23:59:59'),
-                                new OAT\Property(property: 'message', type: 'string', example: 'Subscription cancelled. Access remains active until the end of the period.')
+                                new OAT\Property(property: 'message', type: 'string', example: 'Subscription cancelled. Access remains active until the end of the period.'),
                             ],
                             type: 'object'
-                        )
+                        ),
                     ]
                 )
             ),
@@ -118,23 +117,24 @@ class SubscriptionController extends Controller
                 description: 'Not Found: No active subscription found for this user',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'No active subscription found.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'No active subscription found.'),
                     ]
                 )
             ),
             new OAT\Response(
                 response: 401,
                 description: 'Unauthenticated: Missing or invalid token'
-            )
+            ),
         ]
     )]
     public function cancel(Request $request): JsonResponse
     {
         try {
             $data = $this->subscriptionService->cancelSubscription($request->user());
+
             return response()->json([
                 'status' => 'success',
-                'data' => $data
+                'data' => $data,
             ]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 400);
@@ -157,7 +157,7 @@ class SubscriptionController extends Controller
                             property: 'url',
                             type: 'string',
                             example: 'https://stripe.com...'
-                        )
+                        ),
                     ]
                 )
             ),
@@ -166,22 +166,23 @@ class SubscriptionController extends Controller
                 description: 'Not Found: User does not have a Stripe billing history yet',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'You do not have a billing history yet.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'You do not have a billing history yet.'),
                     ]
                 )
             ),
             new OAT\Response(
                 response: 401,
                 description: 'Unauthenticated: Missing or invalid token'
-            )
+            ),
         ]
     )]
     public function portal(Request $request): JsonResponse
     {
         try {
             $url = $this->subscriptionService->getBillingPortalUrl($request->user());
+
             return response()->json([
-                'url' => $url
+                'url' => $url,
             ]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 400);
@@ -201,7 +202,7 @@ class SubscriptionController extends Controller
                 required: true,
                 schema: new OAT\Schema(type: 'string'),
                 example: 'cs_test_a1b2c3d4...'
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -211,7 +212,7 @@ class SubscriptionController extends Controller
                     properties: [
                         new OAT\Property(property: 'status', type: 'string', example: 'success'),
                         new OAT\Property(property: 'redirect_url', type: 'string', example: '/dashboard'),
-                        new OAT\Property(property: 'message', type: 'string', example: 'Payment successful')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Payment successful'),
                     ]
                 )
             ),
@@ -226,24 +227,25 @@ class SubscriptionController extends Controller
             new OAT\Response(
                 response: 500,
                 description: 'Internal Server Error: Failed to retrieve session data from Stripe'
-            )
+            ),
         ]
     )]
     public function success(Request $request): JsonResponse
     {
         $sessionId = $request->query('session_id');
-        if (!$sessionId) {
+        if (! $sessionId) {
             return response()->json(['error' => 'No session ID'], 400);
         }
         try {
             $user = $this->subscriptionService->handleSuccessfulPayment($sessionId);
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
+
             return response()->json([
                 'status' => 'success',
                 'redirect_url' => '/dashboard',
-                'message' => 'Payment successful'
+                'message' => 'Payment successful',
             ]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
@@ -265,7 +267,7 @@ class SubscriptionController extends Controller
                         description: 'The Stripe Price ID for the trial plan',
                         type: 'string',
                         example: 'price_1TI47gDY7sR3maRKIOw3iWi0'
-                    )
+                    ),
                 ]
             )
         ),
@@ -277,7 +279,7 @@ class SubscriptionController extends Controller
                 content: new OAT\JsonContent(
                     properties: [
                         new OAT\Property(property: 'status', type: 'string', example: 'success'),
-                        new OAT\Property(property: 'message', type: 'string', example: 'Trial started! Enjoy your 7 days of premium access.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Trial started! Enjoy your 7 days of premium access.'),
                     ]
                 )
             ),
@@ -286,7 +288,7 @@ class SubscriptionController extends Controller
                 description: 'Conflict: User has already used their trial period',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'You have already used your trial period.')
+                        new OAT\Property(property: 'message', type: 'string', example: 'You have already used your trial period.'),
                     ]
                 )
             ),
@@ -297,7 +299,7 @@ class SubscriptionController extends Controller
             new OAT\Response(
                 response: 401,
                 description: 'Unauthenticated: Missing or invalid token'
-            )
+            ),
         ]
     )]
     public function startTrial(CheckoutRequest $request): JsonResponse
@@ -306,9 +308,10 @@ class SubscriptionController extends Controller
             $this->subscriptionService->startFreeTrialWithoutCard(
                 $request->user(),
                 $request->validated('price_id'));
+
             return response()->json([
                 'status' => 'success',
-                'message' => 'Trial started! Enjoy your 5 days of premium access.'
+                'message' => 'Trial started! Enjoy your 5 days of premium access.',
             ], 201);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 500);

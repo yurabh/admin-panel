@@ -10,16 +10,14 @@ use App\Services\BillingService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OAT;
+use Symfony\Component\HttpFoundation\Response;
 
 class BillingController extends Controller
 {
     public function __construct(
         protected BillingService $billingService
-    )
-    {
-    }
+    ) {}
 
     #[OAT\Get(
         path: '/api/billing/info',
@@ -33,7 +31,7 @@ class BillingController extends Controller
                 description: 'Successful retrieval of billing info',
                 content: new OAT\JsonContent(ref: '#/components/schemas/BillingResource')
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function show(Request $request): BillingResource
@@ -56,12 +54,13 @@ class BillingController extends Controller
                     items: new OAT\Items(ref: '#/components/schemas/InvoiceResource')
                 )
             ),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function invoices(Request $request): AnonymousResourceCollection
     {
         $invoices = $request->user()->invoices();
+
         return InvoiceResource::collection($invoices);
     }
 
@@ -78,7 +77,7 @@ class BillingController extends Controller
                 in: 'query',
                 required: true,
                 schema: new OAT\Schema(type: 'string')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -87,7 +86,7 @@ class BillingController extends Controller
                 content: new OAT\MediaType(mediaType: 'application/pdf')
             ),
             new OAT\Response(response: 404, description: 'Invoice not found'),
-            new OAT\Response(response: 401, description: 'Unauthenticated')
+            new OAT\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function downloadInvoice(DownloadInvoiceRequest $request): Response

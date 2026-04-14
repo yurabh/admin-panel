@@ -23,6 +23,7 @@ class SettingUpdateAction
 
         $setting = DB::transaction(function () use ($setting, $data) {
             $setting->update($data);
+
             return $setting;
         });
 
@@ -44,26 +45,25 @@ class SettingUpdateAction
                     $jobs[] = new NotifyUserAboutSettingsChangeJob($user, $setting->key);
                 }
             });
+
         return $jobs;
     }
-
 
     /**
      * @throws \Throwable
      */
     private function triggerBatch(array $jobs, Setting $setting): void
     {
-        if (!empty($jobs)) {
+        if (! empty($jobs)) {
             Bus::batch($jobs)
                 ->name("Broadcast update: {$setting->key}")
                 ->then(function ($batch) {
                     Log::info("Sending  {$batch->id} successfully done!");
                 })
                 ->catch(function ($batch, $e) {
-                    Log::error("Error during sending: " . $e->getMessage());
+                    Log::error('Error during sending: '.$e->getMessage());
                 })
-                ->finally(function ($batch) {
-                })
+                ->finally(function ($batch) {})
                 ->dispatch();
         }
     }

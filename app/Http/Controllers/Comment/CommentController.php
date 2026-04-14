@@ -11,8 +11,8 @@ use App\Models\Comment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 use OpenApi\Attributes as OAT;
+use Throwable;
 
 class CommentController extends Controller
 {
@@ -38,7 +38,7 @@ class CommentController extends Controller
             new OAT\Response(
                 response: 403,
                 description: 'Forbidden'
-            )
+            ),
         ]
     )]
     public function index()
@@ -47,7 +47,6 @@ class CommentController extends Controller
 
         return CommentResource::collection($comments);
     }
-
 
     #[OAT\Post(
         path: '/api/comments',
@@ -70,15 +69,15 @@ class CommentController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation errors'
-            )
+            ),
         ]
     )]
     public function store(CommentRequest $request, CreateCommentAction $action)
     {
-        $comment = DB::transaction(fn() => $action->handle($request));
+        $comment = DB::transaction(fn () => $action->handle($request));
+
         return CommentResource::make($comment);
     }
-
 
     #[OAT\Get(
         path: '/api/comments/{id}',
@@ -91,7 +90,7 @@ class CommentController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -106,18 +105,17 @@ class CommentController extends Controller
             new OAT\Response(
                 response: 404,
                 description: 'Comment not found'
-            )
+            ),
         ]
     )]
     public function show(Comment $comment)
     {
         $comment->load(['user', 'post']);
 
-        Log::debug('Comment found with id: ' . $comment->id);
+        Log::debug('Comment found with id: '.$comment->id);
 
         return CommentResource::make($comment);
     }
-
 
     #[OAT\Put(
         path: '/api/comments/{id}',
@@ -134,7 +132,7 @@ class CommentController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -157,7 +155,7 @@ class CommentController extends Controller
             new OAT\Response(
                 response: 422,
                 description: 'Validation errors'
-            )
+            ),
         ]
     )]
     /**
@@ -167,10 +165,10 @@ class CommentController extends Controller
     {
         $this->authorize('update', $comment);
 
-        $comment = DB::transaction(fn() => $action->handle($request, $comment));
+        $comment = DB::transaction(fn () => $action->handle($request, $comment));
+
         return CommentResource::make($comment);
     }
-
 
     #[OAT\Delete(
         path: '/api/comments/{id}',
@@ -183,7 +181,7 @@ class CommentController extends Controller
                 in: 'path',
                 required: true,
                 schema: new OAT\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OAT\Response(
@@ -191,7 +189,7 @@ class CommentController extends Controller
                 description: 'Comment deleted successfully',
                 content: new OAT\JsonContent(
                     properties: [
-                        new OAT\Property(property: 'message', type: 'string', example: 'Successfully deleted Comment')
+                        new OAT\Property(property: 'message', type: 'string', example: 'Successfully deleted Comment'),
                     ],
                     type: 'object'
                 )
@@ -207,7 +205,7 @@ class CommentController extends Controller
             new OAT\Response(
                 response: 404,
                 description: 'Comment not found'
-            )
+            ),
         ]
     )]
     public function destroy($id)
@@ -216,14 +214,14 @@ class CommentController extends Controller
 
         $this->authorize('delete', $comment);
 
-        Log::debug('Comment found with id: ' . $comment->id);
+        Log::debug('Comment found with id: '.$comment->id);
 
         $comment->delete();
 
-        Log::debug('Comment removed with id: ' . $comment->id);
+        Log::debug('Comment removed with id: '.$comment->id);
 
         return response()->json([
-            'message' => 'Successfully deleted Comment'
+            'message' => 'Successfully deleted Comment',
         ]);
     }
 }

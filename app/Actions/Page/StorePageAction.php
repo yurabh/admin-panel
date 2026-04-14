@@ -23,6 +23,7 @@ class StorePageAction
 
             $data['image'] = $path;
         }
+
         return Page::query()->create($data);
     }
 }

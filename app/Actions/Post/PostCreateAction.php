@@ -13,6 +13,7 @@ class PostCreateAction
         $mappedData->save();
         $tagIds = $data['tags'] ?? [];
         $mappedData->tags()->sync($tagIds);
+
         return $mappedData;
     }
 
@@ -27,6 +28,7 @@ class PostCreateAction
         $post->published_at = $data['published_at'] = $data['is_published']
             ? ($data['published_at'] ?? now())
             : $data['published_at'] ?? null;
+
         return $post;
     }
 }

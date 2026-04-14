@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\Controllers;
 
+use App\Exceptions\PageException;
 use App\Http\Controllers\Page\DeletePageController;
 use App\Models\Page;
-use App\Exceptions\PageException;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Mockery;
 
 class DeletePageControllerTest extends TestCase
 {
@@ -20,10 +20,9 @@ class DeletePageControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->controller = new DeletePageController();
+        $this->controller = new DeletePageController;
         Storage::fake('s3');
     }
-
 
     #[Test]
     public function it_deletes_image_from_s3_if_exists_and_page()
@@ -40,7 +39,6 @@ class DeletePageControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-
     #[Test]
     public function it_does_not_call_s3_if_image_is_null()
     {
@@ -52,7 +50,6 @@ class DeletePageControllerTest extends TestCase
 
         $this->assertEmpty(Storage::disk('s3')->allFiles());
     }
-
 
     #[Test]
     public function it_throws_page_exception_if_delete_fails()
@@ -67,11 +64,11 @@ class DeletePageControllerTest extends TestCase
         ($this->controller)($page);
     }
 
-
     private function createMockPage(?string $image): MockInterface|Page
     {
         $page = Mockery::mock(Page::class)->makePartial();
         $page->image = $image;
+
         return $page;
     }
 }

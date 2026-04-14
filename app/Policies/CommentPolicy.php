@@ -16,7 +16,6 @@ class CommentPolicy
         return $user->role->value === UserRole::ADMIN->value || $user->id === $comment->user_id;
     }
 
-
     /**
      * Determine whether the user can delete the model.
      */

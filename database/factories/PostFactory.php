@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends Factory<Post>
  */
 class PostFactory extends Factory
 {
@@ -18,6 +19,7 @@ class PostFactory extends Factory
     public function definition(): array
     {
         $title = $this->faker->unique()->sentence();
+
         return [
             'title' => $title,
             'slug' => Str::slug($title),

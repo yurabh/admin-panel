@@ -32,7 +32,7 @@ class UpdatePageAction
 
     private function updateImageInS3Bucket(Page $page): void
     {
-        if (!empty($page->image)) {
+        if (! empty($page->image)) {
 
             Storage::disk('s3')->delete($page->image);
 

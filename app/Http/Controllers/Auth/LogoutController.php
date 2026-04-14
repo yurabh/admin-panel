@@ -24,14 +24,14 @@ class LogoutController extends Controller
             new OAT\Response(
                 response: 401,
                 description: 'Unauthenticated'
-            )
+            ),
         ]
     )]
     public function __invoke(Request $request, LogoutAction $action)
     {
         $token = $request->user()->currentAccessToken();
 
-        DB::transaction(callback: fn() => $action->handle($token));
+        DB::transaction(callback: fn () => $action->handle($token));
 
         return response()->json(status: 204);
     }

@@ -28,12 +28,12 @@ use OpenApi\Attributes as OAT;
                             property: 'pdf_url',
                             type: 'string',
                             example: 'http://localhost/api/billing/invoices/download?invoice_id=in_123'
-                        )
+                        ),
                     ]
                 )
             )
         ),
-        new OAT\Response(response: 401, description: 'Unauthenticated')
+        new OAT\Response(response: 401, description: 'Unauthenticated'),
     ]
 )]
 class InvoiceResource extends JsonResource

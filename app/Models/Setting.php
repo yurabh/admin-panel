@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 class Setting extends Model
 {
     protected $fillable = [
-        'key', 'value'
+        'key', 'value',
     ];
 
     public static function getAllCached()

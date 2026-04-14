@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
  */
 class Page extends Model
 {
-
     use HasFactory;
 
     protected $fillable = [
