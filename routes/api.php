@@ -37,7 +37,7 @@ Route::prefix('admin')
 
         Route::resource('settings', SettingController::class)
             ->only(['index', 'store', 'update', 'destroy', 'show']);
-
+        Route::get('categories', [CategoryController::class, 'index']);
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::get('/categories/{category}', [CategoryController::class, 'show']);
         Route::put('/categories/{category}', [CategoryController::class, 'update']);

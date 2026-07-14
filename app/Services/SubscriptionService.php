@@ -24,14 +24,14 @@ class SubscriptionService
         try {
             $checkoutSession = $user->newSubscription(User::SUBSCRIPTION_NAME, $priceId)
                 ->checkout([
-                    'success_url' => config('app.frontend_url').'/api/subscription/success?session_id={CHECKOUT_SESSION_ID}',
-                    'cancel_url' => config('app.frontend_url').'/cancel',
+                    'success_url' => config('app.frontend_url') . '/billing/success?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => config('app.frontend_url') . '/billing',
                     'payment_method_collection' => 'always',
                 ]);
 
             return $checkoutSession->url;
         } catch (Exception $e) {
-            Log::error('Stripe Checkout Error: '.$e->getMessage());
+            Log::error('Stripe Checkout Error: ' . $e->getMessage());
             throw new BillingException('Payment service unavailable. Please try again later.', 503);
         }
     }
@@ -43,7 +43,7 @@ class SubscriptionService
     {
         $subscription = $user->subscription(User::SUBSCRIPTION_NAME);
 
-        if (! $subscription || ! $subscription->active()) {
+        if (!$subscription || !$subscription->active()) {
             throw new BillingException('No active subscription found.', 404);
         }
         $subscription->cancel();
@@ -60,11 +60,13 @@ class SubscriptionService
      */
     public function getBillingPortalUrl(User $user): string
     {
-        if (! $user->hasStripeId()) {
+        if (!$user->hasStripeId()) {
             throw new BillingException('You do not have a billing history yet.', 404);
         }
 
-        return $user->redirectToBillingPortal(url('/dashboard'))->getTargetUrl();
+        return $user->redirectToBillingPortal(
+            config('app.frontend_url') . '/billing'
+        )->getTargetUrl();
     }
 
     /**
@@ -73,14 +75,48 @@ class SubscriptionService
     public function handleSuccessfulPayment(string $sessionId): ?User
     {
         Stripe::setApiKey(config('cashier.secret'));
+
         $session = StripeCheckoutSession::retrieve([
             'id' => $sessionId,
-            'expand' => ['subscription.default_payment_method'],
+            'expand' => ['subscription.default_payment_method', 'subscription.items.data.price'],
         ]);
+
         $user = Cashier::findBillable($session->customer);
-        if (! $user) {
+        if (!$user) {
             return null;
         }
+
+        if ($session->subscription) {
+            $stripeSubscription = $session->subscription;
+            $priceId = $stripeSubscription->items->data[0]->price->id ?? null;
+            $quantity = $stripeSubscription->items->data[0]->quantity ?? 1;
+
+            $subscription = $user->subscriptions()->updateOrCreate(
+                ['stripe_id' => $stripeSubscription->id],
+                [
+                    'type' => User::SUBSCRIPTION_NAME,
+                    'stripe_status' => $stripeSubscription->status,
+                    'stripe_price' => $priceId,
+                    'quantity' => $quantity,
+                    'trial_ends_at' => $stripeSubscription->trial_end
+                        ? \Carbon\Carbon::createFromTimestamp($stripeSubscription->trial_end)
+                        : null,
+                    'ends_at' => null,
+                ]
+            );
+
+            foreach ($stripeSubscription->items->data as $item) {
+                $subscription->items()->updateOrCreate(
+                    ['stripe_id' => $item->id],
+                    [
+                        'stripe_product' => $item->price->product,
+                        'stripe_price' => $item->price->id,
+                        'quantity' => $item->quantity,
+                    ]
+                );
+            }
+        }
+
         if ($session->subscription && $session->subscription->default_payment_method) {
             $user->updateDefaultPaymentMethod($session->subscription->default_payment_method->id);
         }
@@ -101,7 +137,7 @@ class SubscriptionService
                 ->trialDays(5)
                 ->create(null);
         } catch (Exception $e) {
-            Log::error('Free Trial Activation Error: '.$e->getMessage());
+            Log::error('Free Trial Activation Error: ' . $e->getMessage());
             throw new BillingException('Could not start free trial.', 503);
         }
     }
