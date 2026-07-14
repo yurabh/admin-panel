@@ -22,7 +22,7 @@ class PostCreateAction
         $post->title = $data['title'];
         $post->content = $data['content'];
         $post->slug = Str::slug($data['slug']);
-        $post->user_id = $data['user_id'] ?? $post->user_id;
+        $post->user_id = $data['user_id'] ?? (auth()->id() ?? $post->user_id);
         $post->is_published = $data['is_published'] ?? false;
         $post->category_id = $data['category_id'] ?? $post->category_id;
         $post->published_at = $data['published_at'] = $data['is_published']
