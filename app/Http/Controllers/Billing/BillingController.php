@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\DownloadInvoiceRequest;
 use App\Http\Resources\Billing\BillingResource;
 use App\Http\Resources\Billing\InvoiceResource;
-use App\Services\BillingService;
+use App\Services\Billing\BillingService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
