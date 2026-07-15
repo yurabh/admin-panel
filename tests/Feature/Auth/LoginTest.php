@@ -29,6 +29,7 @@ class LoginTest extends TestCase
             'password' => Hash::make($password = 'secret-password'),
             'role' => 'admin',
         ]);
+        $user->refresh();
 
         $this->postJson('/api/login', [
             'email' => $email,
