@@ -44,11 +44,15 @@ class Post extends Model
         'is_published',
         'published_at',
         'category_id',
+        'ai_metadata',
+        'ai_optimized_content',
+        'ai_status',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'ai_metadata' => 'array',
     ];
 
     public function user(): BelongsTo
@@ -97,7 +101,7 @@ class Post extends Model
             $q->where('category_id', $id);
         })
             ->when(isset($filters['is_published']), function ($q) use ($filters) {
-                $q->where('is_published', (bool) $filters['is_published']);
+                $q->where('is_published', (bool)$filters['is_published']);
             })
             ->when($filters['date_from'] ?? null, function ($q, $date) {
                 $q->whereNotNull('published_at')
