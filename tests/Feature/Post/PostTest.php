@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -24,6 +25,7 @@ class PostTest extends TestCase
         $this->user = User::factory()->create(['role' => 'admin']);
 
         config(['cache.default' => 'array']);
+        Queue::fake();
     }
 
     #[Test]
