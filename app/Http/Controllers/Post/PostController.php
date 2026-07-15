@@ -89,9 +89,9 @@ class PostController extends Controller
     {
         $data = $request->validated();
 
-        $createdPost = DB::transaction(fn () => $action->handle($data, $post));
+        $createdPost = DB::transaction(fn() => $action->handle($data, $post));
 
-        Log::debug('Post stored with id: '.$createdPost->id);
+        Log::debug('Post stored with id: ' . $createdPost->id);
 
         return PostResource::make($createdPost);
     }
@@ -128,7 +128,7 @@ class PostController extends Controller
         try {
             $post = Post::with(['tags', 'category', 'user'])->findOrFail($id);
 
-            Log::debug('Post was listed with id: '.$post->id);
+            Log::debug('Post was listed with id: ' . $post->id);
 
         } catch (Exception $e) {
 
@@ -178,9 +178,9 @@ class PostController extends Controller
 
         $data = $request->validated();
 
-        $updatedPost = DB::transaction(fn () => $action->handle($post, $data));
+        $updatedPost = DB::transaction(fn() => $action->handle($post, $data));
 
-        Log::debug('Post updated with id: '.$updatedPost->id);
+        Log::debug('Post updated with id: ' . $updatedPost->id);
 
         return PostResource::make($updatedPost);
     }
@@ -222,7 +222,7 @@ class PostController extends Controller
     {
         $post->delete();
 
-        Log::debug('Post deleted with id: '.$post->id);
+        Log::debug('Post deleted with id: ' . $post->id);
 
         return response()->noContent();
     }

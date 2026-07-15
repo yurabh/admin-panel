@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Billing;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\CheckoutRequest;
-use App\Services\SubscriptionService;
+use App\Services\Billing\SubscriptionService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

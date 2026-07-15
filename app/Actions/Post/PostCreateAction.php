@@ -2,6 +2,7 @@
 
 namespace App\Actions\Post;
 
+use App\Jobs\ProcessPostWithAiJob;
 use App\Models\Post;
 use Illuminate\Support\Str;
 
@@ -13,6 +14,8 @@ class PostCreateAction
         $mappedData->save();
         $tagIds = $data['tags'] ?? [];
         $mappedData->tags()->sync($tagIds);
+
+        ProcessPostWithAiJob::dispatch($mappedData);
 
         return $mappedData;
     }
