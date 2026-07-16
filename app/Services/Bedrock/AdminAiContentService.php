@@ -3,14 +3,18 @@
 namespace App\Services\Bedrock;
 
 use App\Models\Post;
+use App\Services\OpenAI\Contracts\ContentTransformerInterface;
+use App\Services\OpenAI\Contracts\PostClassifierInterface;
+use App\Services\OpenAI\Contracts\SecurityCheckerInterface;
+use App\Services\OpenAI\Contracts\SeoParserInterface;
 
 class AdminAiContentService
 {
     public function __construct(
-        protected PromptInjectionGateway $security,
-        protected PostMetadataParser     $seoParser,
-        protected PostContentTransformer $transformer,
-        protected PostClassifier         $classifier
+        protected SecurityCheckerInterface    $security,
+        protected SeoParserInterface          $seoParser,
+        protected ContentTransformerInterface $transformer,
+        protected PostClassifierInterface     $classifier,
     )
     {
     }
