@@ -18,6 +18,8 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'ai_provider' => env('AI_PROVIDER', 'openai'),
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

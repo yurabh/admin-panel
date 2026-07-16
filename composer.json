@@ -19,6 +19,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "3.0",
+        "openai-php/laravel": "^0.20.0",
         "predis/predis": "^3.4"
     },
     "require-dev": {
