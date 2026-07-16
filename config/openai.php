@@ -14,7 +14,7 @@ return [
 
     'tasks' => [
         'parsing' => [
-            'max_tokens' => 200,
+            'max_tokens' => 2000,
         ],
         'classification' => [
             'max_tokens' => 1000,
