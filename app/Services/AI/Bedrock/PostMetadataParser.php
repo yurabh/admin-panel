@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI\Bedrock;
 
-class PostMetadataParser extends AbstractClaudeGenerator
+use App\Services\AI\Contacts\SeoParserInterface;
+
+class PostMetadataParser extends AbstractClaudeGenerator implements SeoParserInterface
 {
     private string $content;
 
