@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Post;
-use App\Services\Bedrock\AdminAiContentService;
+use App\Services\AI\AdminAiContentService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
