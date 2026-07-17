@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Services\OpenAI\Contracts\ContentTransformerInterface;
-use App\Services\OpenAI\Contracts\PostClassifierInterface;
-use App\Services\OpenAI\Contracts\SecurityCheckerInterface;
-use App\Services\OpenAI\Contracts\SeoParserInterface;
-use App\Services\OpenAI\PostClassifier as OpenAIPostClassifier;
-use App\Services\OpenAI\PostContentTransformer as OpenAIPostContentTransformer;
-use App\Services\OpenAI\PostMetadataParser as OpenAIPostMetadataParser;
-use App\Services\OpenAI\PromptInjectionGateway as OpenAIPromptInjectionGateway;
+use App\Services\AI\Contacts\ContentTransformerInterface;
+use App\Services\AI\Contacts\PostClassifierInterface;
+use App\Services\AI\Contacts\SecurityCheckerInterface;
+use App\Services\AI\Contacts\SeoParserInterface;
+use App\Services\AI\OpenAI\PostClassifier as OpenAIPostClassifier;
+use App\Services\AI\OpenAI\PostContentTransformer as OpenAIPostContentTransformer;
+use App\Services\AI\OpenAI\PostMetadataParser as OpenAIPostMetadataParser;
+use App\Services\AI\OpenAI\PromptInjectionGateway as OpenAIPromptInjectionGateway;
 use Illuminate\Support\ServiceProvider;
 
 class AiServiceProvider extends ServiceProvider

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI;
 
 use App\Models\Post;
-use App\Services\OpenAI\Contracts\ContentTransformerInterface;
-use App\Services\OpenAI\Contracts\PostClassifierInterface;
-use App\Services\OpenAI\Contracts\SecurityCheckerInterface;
-use App\Services\OpenAI\Contracts\SeoParserInterface;
+use App\Services\AI\Contacts\ContentTransformerInterface;
+use App\Services\AI\Contacts\PostClassifierInterface;
+use App\Services\AI\Contacts\SecurityCheckerInterface;
+use App\Services\AI\Contacts\SeoParserInterface;
 
 class AdminAiContentService
 {

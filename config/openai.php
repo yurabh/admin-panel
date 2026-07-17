@@ -23,7 +23,7 @@ return [
             'max_tokens' => 4000,
         ],
         'security' => [
-            'max_tokens' => 500,
+            'max_tokens' => 2500,
         ],
     ],
 ];
