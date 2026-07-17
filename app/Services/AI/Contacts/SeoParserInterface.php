@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\OpenAI\Contracts;
+namespace App\Services\AI\Contacts;
 
 interface SeoParserInterface extends GenerateResponseInterface
 {
