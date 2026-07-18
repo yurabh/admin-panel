@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI\Bedrock;
 
+use App\Services\AI\Contacts\GenerateResponseInterface;
 use Aws\BedrockRuntime\BedrockRuntimeClient;
 use Throwable;
 
-abstract class AbstractClaudeGenerator
+abstract class AbstractClaudeGenerator implements GenerateResponseInterface
 {
     protected BedrockRuntimeClient $client;
 

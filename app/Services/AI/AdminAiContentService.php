@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI;
 
 use App\Models\Post;
+use App\Services\AI\Contacts\ContentTransformerInterface;
+use App\Services\AI\Contacts\PostClassifierInterface;
+use App\Services\AI\Contacts\SecurityCheckerInterface;
+use App\Services\AI\Contacts\SeoParserInterface;
 
 class AdminAiContentService
 {
     public function __construct(
-        protected PromptInjectionGateway $security,
-        protected PostMetadataParser     $seoParser,
-        protected PostContentTransformer $transformer,
-        protected PostClassifier         $classifier
+        protected SecurityCheckerInterface    $security,
+        protected SeoParserInterface          $seoParser,
+        protected ContentTransformerInterface $transformer,
+        protected PostClassifierInterface     $classifier,
     )
     {
     }

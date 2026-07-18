@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI\Bedrock;
 
-class PostContentTransformer extends AbstractClaudeGenerator
+use App\Services\AI\Contacts\ContentTransformerInterface;
+
+class PostContentTransformer extends AbstractClaudeGenerator implements ContentTransformerInterface
 {
     private string $content;
 

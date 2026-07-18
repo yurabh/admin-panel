@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI\Bedrock;
 
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\AI\Contacts\PostClassifierInterface;
 
-class PostClassifier extends AbstractClaudeGenerator
+class PostClassifier extends AbstractClaudeGenerator implements PostClassifierInterface
 {
     private string $content;
 

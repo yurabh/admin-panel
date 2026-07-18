@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\Bedrock;
+namespace App\Services\AI\Bedrock;
 
-class PromptInjectionGateway extends AbstractClaudeGenerator
+use App\Services\AI\Contacts\SecurityCheckerInterface;
+
+class PromptInjectionGateway extends AbstractClaudeGenerator implements SecurityCheckerInterface
 {
     private string $content;
 
