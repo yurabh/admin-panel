@@ -13,7 +13,7 @@ Schedule::command('app:clean-old-comments')
 Schedule::command('app:publish-posts')
     ->daily();
 
-$adminId = (int) config('services.admin.id');
+$adminId = (int)config('services.admin.id');
 if ($adminId > 0) {
     Schedule::command('app:set-role', [$adminId, 'admin'])
         ->sundays()
@@ -21,3 +21,6 @@ if ($adminId > 0) {
 }
 Schedule::command('queue:prune-failed --hours=48')
     ->monthly();
+
+Schedule::command('shopify:sync')
+    ->everyThirtyMinutes();
