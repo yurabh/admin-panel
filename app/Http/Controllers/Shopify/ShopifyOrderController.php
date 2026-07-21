@@ -64,7 +64,7 @@ class ShopifyOrderController extends Controller
         $orders = ShopifyOrder::query()
             ->when($request->status, fn($q) => $q->where('financial_status', $request->status))
             ->orderByDesc('shopify_created_at')
-            ->paginate($request->per_page ?? 15);
+            ->get();
 
         return response()->json($orders);
     }

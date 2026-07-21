@@ -63,7 +63,7 @@ class ShopifyProductController extends Controller
         $products = ShopifyProduct::query()
             ->when($request->search, fn($q) => $q->where('title', 'like', "%{$request->search}%"))
             ->orderByDesc('shopify_created_at')
-            ->paginate($request->per_page ?? 15);
+            ->get();
 
         return response()->json($products);
     }
