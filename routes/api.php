@@ -15,6 +15,9 @@ use App\Http\Controllers\Page\StorePageController;
 use App\Http\Controllers\Page\UpdatePageController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\Setting\SettingController;
+use App\Http\Controllers\Shopify\ShopifyOrderController;
+use App\Http\Controllers\Shopify\ShopifyProductController;
+use App\Http\Controllers\Shopify\ShopifySyncController;
 use App\Http\Controllers\Tag\TagController;
 use App\Http\Controllers\User\UserController;
 use Laravel\Cashier\Http\Controllers\WebhookController;
@@ -50,6 +53,12 @@ Route::prefix('admin')
         Route::delete('/tags/{tag}', [TagController::class, 'destroy']);
 
         Route::apiResource('users', UserController::class);
+
+        Route::get('shopify/products', [ShopifyProductController::class, 'index']);
+        Route::get('shopify/products/{shopifyProduct}', [ShopifyProductController::class, 'show']);
+        Route::get('shopify/orders', [ShopifyOrderController::class, 'index']);
+        Route::get('shopify/orders/{shopifyOrder}', [ShopifyOrderController::class, 'show']);
+        Route::post('shopify/sync', ShopifySyncController::class);
     });
 
 Route::middleware('auth:sanctum')->group(function () {
